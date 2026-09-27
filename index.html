@@ -1,0 +1,2661 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>MPI IPS SMP Kelas 8 - Saluran-Saluran Mobilitas Sosial</title>
+  
+  <style>
+    :root {
+      --primary: #1d4ed8;          /* Biru utama modern */
+      --primary-hover: #1e40af;
+      --primary-light: #60a5fa;
+      --primary-bg: #eff6ff;
+      --secondary: #0d9488;        /* Toska pendukung */
+      --secondary-hover: #0f766e;
+      --secondary-light: #5eead4;
+      --secondary-bg: #f0fdfa;
+      --accent: #f59e0b;           /* Kuning / Amber aksen */
+      --accent-hover: #d97706;
+      --accent-light: #fef3c7;
+      --accent-text: #92400e;
+      --bg-body: #f8fafc;          /* Abu-abu terang bersih */
+      --bg-card: #ffffff;
+      --bg-panel: #f1f5f9;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --border-color: #cbd5e1;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --success-text: #14532d;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+      --danger-text: #7f1d1d;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 18px -3px rgba(0,0,0,0.12), 0 4px 6px -4px rgba(0,0,0,0.08);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+      font-size: 16px;
+    }
+
+    /* Touch screen & PID optimization */
+    button, input, textarea {
+      font-family: inherit;
+    }
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(8px);
+      border-bottom: 2px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.65rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--primary);
+    }
+
+    .brand-badge {
+      background: var(--accent-light);
+      color: var(--accent-text);
+      font-size: 0.8rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      font-weight: 800;
+      border: 1px solid #fde68a;
+    }
+
+    .header-tools {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .progress-bar-wrapper {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      position: relative;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--secondary), var(--primary));
+      transition: width 0.4s ease;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.4rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-sm);
+      text-decoration: none;
+      min-height: 48px; /* Accessible touch target */
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--primary-hover), var(--primary));
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+      color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, var(--secondary-hover), var(--secondary));
+    }
+
+    .btn-accent {
+      background: linear-gradient(135deg, var(--accent), #fbbf24);
+      color: #78350f;
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      color: var(--text-main);
+      border: 2px solid var(--border-color);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-bg);
+    }
+
+    .btn-icon {
+      padding: 0.5rem;
+      min-width: 46px;
+      min-height: 46px;
+      font-size: 1.25rem;
+    }
+
+    .app-main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.25rem 1.25rem 3rem;
+      position: relative;
+    }
+
+    .view-screen {
+      display: none;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .view-screen.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #0d9488 100%);
+      color: #ffffff;
+      padding: 3.5rem 2rem;
+      border-radius: var(--radius-lg);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 2rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.6rem;
+      line-height: 1.2;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+
+    .hero-sub {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 0.4rem 1.2rem;
+      border-radius: var(--radius-full);
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      max-width: 720px;
+      margin: 0 auto 2rem;
+      opacity: 0.95;
+    }
+
+    /* Animated mobility stage */
+    .stage-anim-flow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem auto;
+      max-width: 850px;
+      flex-wrap: wrap;
+    }
+
+    .flow-node {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      min-width: 120px;
+      animation: floatElement 3s ease-in-out infinite alternate;
+    }
+
+    .flow-node:nth-child(3) { animation-delay: 0.4s; }
+    .flow-node:nth-child(5) { animation-delay: 0.8s; }
+    .flow-node:nth-child(7) { animation-delay: 1.2s; }
+
+    .flow-arrow {
+      font-size: 1.8rem;
+      color: var(--accent);
+      animation: arrowSlide 1.5s ease-in-out infinite;
+    }
+
+    @keyframes floatElement {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-8px); }
+    }
+
+    @keyframes arrowSlide {
+      0%, 100% { transform: translateX(0); opacity: 0.6; }
+      50% { transform: translateX(6px); opacity: 1; }
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.35rem;
+      margin-top: 1.5rem;
+    }
+
+    .dash-menu-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      border: 2px solid var(--border-color);
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 1.1rem;
+      transition: all 0.25s ease;
+      min-height: 115px;
+    }
+
+    .dash-menu-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .dash-icon-wrapper {
+      width: 54px;
+      height: 54px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.85rem;
+      flex-shrink: 0;
+    }
+
+    .icon-blue { background: #eff6ff; color: var(--primary); }
+    .icon-teal { background: #f0fdfa; color: var(--secondary); }
+    .icon-amber { background: #fffbeb; color: var(--accent); }
+    .icon-emerald { background: #ecfdf5; color: var(--success); }
+    .icon-indigo { background: #e0e7ff; color: #4338ca; }
+    .icon-purple { background: #faf5ff; color: #7e22ce; }
+
+    .dash-details h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 0.3rem;
+    }
+
+    .dash-details p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .subnav-scroll {
+      display: flex;
+      gap: 0.6rem;
+      overflow-x: auto;
+      padding-bottom: 0.8rem;
+      margin-bottom: 1.5rem;
+      scrollbar-width: thin;
+    }
+
+    .subnav-pill-btn {
+      background: #ffffff;
+      border: 2px solid var(--border-color);
+      padding: 0.65rem 1.25rem;
+      border-radius: var(--radius-full);
+      font-size: 0.95rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+      min-height: 44px;
+    }
+
+    .subnav-pill-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Interactive pathway animation */
+    .interactive-pathway {
+      background: var(--bg-panel);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      border: 2px dashed #cbd5e1;
+    }
+
+    .path-box {
+      background: #ffffff;
+      padding: 0.75rem 1.15rem;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-left: 4px solid var(--primary);
+    }
+
+    .reorder-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      margin: 1.5rem 0;
+    }
+
+    .reorder-item {
+      background: #ffffff;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      transition: all 0.2s;
+    }
+
+    .reorder-btns {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .btn-step-move {
+      background: #f1f5f9;
+      border: 2px solid var(--border-color);
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+
+    .btn-step-move:active {
+      background: #cbd5e1;
+    }
+
+    /* Matching cards layout */
+    .matching-grid-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin: 1.25rem 0;
+    }
+
+    .match-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .pair-card {
+      background: #ffffff;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.2s ease;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+    }
+
+    .pair-card.active-selected {
+      border-color: var(--primary);
+      background: var(--primary-bg);
+      box-shadow: 0 0 0 3px var(--primary-light);
+    }
+
+    .pair-card.paired-success {
+      border-color: var(--success);
+      background: var(--success-bg);
+      color: var(--success-text);
+      cursor: default;
+    }
+
+    .mindmap-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--border-color);
+    }
+
+    .mindmap-center {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #ffffff;
+      padding: 1.1rem 2rem;
+      border-radius: var(--radius-full);
+      font-size: 1.2rem;
+      font-weight: 900;
+      box-shadow: var(--shadow-md);
+      text-align: center;
+    }
+
+    .mindmap-branches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .mindmap-branch-btn {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .mindmap-branch-btn:hover {
+      border-color: var(--secondary);
+      background: var(--secondary-bg);
+      transform: translateY(-3px);
+    }
+
+    .quiz-card-container {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    .quiz-status-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .question-prompt {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .answers-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .ans-option-btn {
+      background: #f8fafc;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      font-size: 1.05rem;
+      text-align: left;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+    }
+
+    .ans-option-btn:hover:not(.disabled) {
+      border-color: var(--primary);
+      background: var(--primary-bg);
+      transform: translateX(4px);
+    }
+
+    .ans-option-btn.opt-correct {
+      border-color: var(--success);
+      background: var(--success-bg);
+      color: var(--success-text);
+      font-weight: 800;
+    }
+
+    .ans-option-btn.opt-wrong {
+      border-color: var(--danger);
+      background: var(--danger-bg);
+      color: var(--danger-text);
+      font-weight: 800;
+    }
+
+    .feedback-alert-box {
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      margin: 1.2rem 0;
+      display: none;
+      animation: fadeIn 0.25s ease;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .feedback-alert-box.correct {
+      background: var(--success-bg);
+      border: 2px solid #86efac;
+      color: var(--success-text);
+      display: block;
+    }
+
+    .feedback-alert-box.wrong {
+      background: var(--danger-bg);
+      border: 2px solid #fca5a5;
+      color: var(--danger-text);
+      display: block;
+    }
+
+    .card-flip-stage {
+      perspective: 1000px;
+      max-width: 650px;
+      margin: 1.5rem auto;
+      min-height: 290px;
+    }
+
+    .card-flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 290px;
+      text-align: center;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .card-flip-inner.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      min-height: 290px;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: var(--radius-lg);
+      padding: 2.2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+      border: 2px solid var(--border-color);
+    }
+
+    .card-front {
+      background: #ffffff;
+      color: var(--text-main);
+    }
+
+    .card-back {
+      background: linear-gradient(135deg, #0f766e, var(--secondary));
+      color: #ffffff;
+      transform: rotateY(180deg);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-backdrop.is-open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .modal-surface {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      max-width: 520px;
+      width: 100%;
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      border: 2px solid var(--border-color);
+      animation: zoomIn 0.25s ease;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    /* Badges visual gallery */
+    .badges-flex-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .badge-card {
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: var(--radius-md);
+      padding: 1.25rem 0.75rem;
+      text-align: center;
+      opacity: 0.35;
+      transition: all 0.3s;
+    }
+
+    .badge-card.unlocked {
+      background: #fffbeb;
+      border-color: #f59e0b;
+      opacity: 1;
+      transform: scale(1.03);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .badge-card .badge-icon {
+      font-size: 2.4rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .badge-card .badge-title {
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    /* Common bottom navigation bar */
+    .bottom-flow-nav {
+      margin-top: 2rem;
+      padding-top: 1.2rem;
+      border-top: 2px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* Keyframe animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 680px) {
+      .matching-grid-wrapper { grid-template-columns: 1fr; }
+      .hero-title { font-size: 1.85rem; }
+      .btn { padding: 0.65rem 1rem; font-size: 0.92rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-content">
+      <div class="brand-title">
+        <span>📘</span>
+        <span>IPS KELAS 8</span>
+        <span class="brand-badge">SMP</span>
+      </div>
+
+      <div class="header-tools">
+        <button class="btn btn-outline btn-icon" onclick="App.navigateTo('menu')" title="Menu Utama">🏠</button>
+        <button class="btn btn-outline btn-icon" onclick="App.openTeacherMode()" title="Mode Guru">👨‍🏫</button>
+        <button class="btn btn-outline btn-icon" id="btnSoundToggle" onclick="SoundSynth.toggle()" title="Efek Audio">🔊</button>
+      </div>
+    </div>
+    <!-- Interactive Progress indicator -->
+    <div class="progress-bar-wrapper" title="Progres Pembelajaran Kamu">
+      <div class="progress-bar-fill" id="topProgressBar"></div>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <!-- 1. HALAMAN PEMBUKA (COVER) -->
+    <section id="view-cover" class="view-screen active">
+      <div class="hero-banner">
+        <div class="hero-sub">IPS SMP Kelas 8 • Kurikulum Merdeka</div>
+        <h1 class="hero-title">SALURAN-SALURAN MOBILITAS SOSIAL</h1>
+        <p class="hero-desc">Kenali berbagai jalan yang dapat membuka peluang perubahan status sosial dalam masyarakat.</p>
+
+        <!-- Visualisasi dinamis Siswa & Mobilitas Sosial -->
+        <div class="stage-anim-flow">
+          <div class="flow-node">
+            <span style="font-size:2rem">🎒</span>
+            <span style="font-weight:700; font-size:0.85rem">Siswa SMP</span>
+          </div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-node">
+            <span style="font-size:2rem">🎓</span>
+            <span style="font-weight:700; font-size:0.85rem">Pendidikan</span>
+          </div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-node">
+            <span style="font-size:2rem">💼</span>
+            <span style="font-weight:700; font-size:0.85rem">Profesi/Kerja</span>
+          </div>
+          <div class="flow-arrow">➔</div>
+          <div class="flow-node">
+            <span style="font-size:2rem">⭐</span>
+            <span style="font-weight:700; font-size:0.85rem">Status Naik</span>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
+          <button class="btn btn-accent" style="padding:1rem 2.5rem; font-size:1.15rem" onclick="App.navigateTo('tujuan')">
+            🚀 MULAI BELAJAR
+          </button>
+          <button class="btn btn-outline" style="padding:1rem 1.75rem; background:rgba(255,255,255,0.95)" onclick="App.navigateTo('menu')">
+            📋 Menu Utama
+          </button>
+        </div>
+      </div>
+
+      <div class="card" style="text-align:center; background:#f0fdf4; border-color:#86efac;">
+        <h4 style="color:#166534; margin-bottom:0.25rem;">✨ Media Pembelajaran Interaktif Mandiri & Siap Layar Sentuh / PID</h4>
+        <p style="color:#15803d; font-size:0.95rem;">
+          Didesain ramah siswa SMP, bekerja 100% offline tanpa membutuhkan koneksi internet atau aplikasi tambahan!
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. TUJUAN PEMBELAJARAN -->
+    <section id="view-tujuan" class="view-screen">
+      <div class="card">
+        <h2 style="color:var(--primary); margin-bottom:0.4rem; display:flex; align-items:center; gap:0.6rem;">
+          🎯 Tujuan Pembelajaran
+        </h2>
+        <p style="color:var(--text-muted); margin-bottom:1.5rem; font-size:1rem;">
+          Setelah mempelajari materi ini, peserta didik diharapkan mampu:
+        </p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.15rem;">
+          <div class="card" style="margin-bottom:0; background:#f8fafc; border-left:5px solid var(--primary);">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">📖</div>
+            <h4 style="margin-bottom:0.25rem;">1. Menjelaskan Pengertian</h4>
+            <p style="font-size:0.9rem; color:var(--text-muted);">Menjelaskan pengertian saluran mobilitas sosial secara jelas dan mudah dipahami.</p>
+          </div>
+
+          <div class="card" style="margin-bottom:0; background:#f8fafc; border-left:5px solid var(--secondary);">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🔍</div>
+            <h4 style="margin-bottom:0.25rem;">2. Mengidentifikasi Saluran</h4>
+            <p style="font-size:0.9rem; color:var(--text-muted);">Mengidentifikasi berbagai saluran mobilitas sosial yang ada di lingkungan sekitar kita.</p>
+          </div>
+
+          <div class="card" style="margin-bottom:0; background:#f8fafc; border-left:5px solid var(--accent);">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">⚙️</div>
+            <h4 style="margin-bottom:0.25rem;">3. Menjelaskan Fungsi</h4>
+            <p style="font-size:0.9rem; color:var(--text-muted);">Menjelaskan fungsi saluran mobilitas sosial dalam kehidupan bermasyarakat.</p>
+          </div>
+
+          <div class="card" style="margin-bottom:0; background:#f8fafc; border-left:5px solid var(--success);">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">💡</div>
+            <h4 style="margin-bottom:0.25rem;">4. Memberikan Contoh Nyata</h4>
+            <p style="font-size:0.9rem; color:var(--text-muted);">Memberikan contoh saluran mobilitas sosial dalam kehidupan sehari-hari secara faktual.</p>
+          </div>
+
+          <div class="card" style="margin-bottom:0; background:#f8fafc; border-left:5px solid #6366f1;">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🧩</div>
+            <h4 style="margin-bottom:0.25rem;">5. Menganalisis Kasus</h4>
+            <p style="font-size:0.9rem; color:var(--text-muted);">Menganalisis contoh sederhana mobilitas sosial berdasarkan salurannya secara kritis.</p>
+          </div>
+
+          <div class="card" style="margin-bottom:0; background:#f8fafc; border-left:5px solid #ec4899;">
+            <div style="font-size:2rem; margin-bottom:0.5rem;">🌟</div>
+            <h4 style="margin-bottom:0.25rem;">6. Menunjukkan Sikap Positif</h4>
+            <p style="font-size:0.9rem; color:var(--text-muted);">Menunjukkan sikap positif terhadap peluang menaikkan status melalui pendidikan & kerja keras.</p>
+          </div>
+        </div>
+
+        <div class="bottom-flow-nav">
+          <button class="btn btn-outline" onclick="App.navigateTo('cover')">← Kembali</button>
+          <button class="btn btn-outline" onclick="App.navigateTo('menu')">🏠 Home</button>
+          <button class="btn btn-primary" onclick="App.navigateTo('materi')">Mulai Belajar Materi →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. MENU UTAMA -->
+    <section id="view-menu" class="view-screen">
+      <div style="margin-bottom:1.5rem;">
+        <h2 style="font-size:1.85rem; font-weight:900; color:var(--text-main);">Dashboard Menu Utama</h2>
+        <p style="color:var(--text-muted); font-size:1.05rem;">Pilih kartu pembelajaran di bawah untuk memulai penjelajahanmu!</p>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="dash-menu-card" onclick="App.navigateTo('tujuan')">
+          <div class="dash-icon-wrapper icon-blue">🎯</div>
+          <div class="dash-details">
+            <h3>Tujuan Pembelajaran</h3>
+            <p>Capaian kompetensi dan indikator belajar materi mobilitas.</p>
+          </div>
+        </div>
+
+        <div class="dash-menu-card" onclick="App.navigateTo('materi')">
+          <div class="dash-icon-wrapper icon-blue">📚</div>
+          <div class="dash-details">
+            <h3>Materi</h3>
+            <p>Eksplorasi 7 sub-materi interaktif dengan alur visual & animasi.</p>
+          </div>
+        </div>
+
+        <div class="dash-menu-card" onclick="App.navigateTo('kuis')">
+          <div class="dash-icon-wrapper icon-teal">🎮</div>
+          <div class="dash-details">
+            <h3>Kuis Interaktif</h3>
+            <p>10 soal interaktif berpoin langsung dengan umpan balik cepat.</p>
+          </div>
+        </div>
+
+        <div class="dash-menu-card" onclick="App.navigateTo('tantangan')">
+          <div class="dash-icon-wrapper icon-amber">🏆</div>
+          <div class="dash-details">
+            <h3>Tantangan</h3>
+            <p>Pecahkan kasus studi dan raih lencana Detektif Mobilitas!</p>
+          </div>
+        </div>
+
+        <div class="dash-menu-card" onclick="App.navigateTo('evaluasi')">
+          <div class="dash-icon-wrapper icon-emerald">📝</div>
+          <div class="dash-details">
+            <h3>Evaluasi Akhir</h3>
+            <p>10 soal analisis pemahaman dengan kategori hasil belajar.</p>
+          </div>
+        </div>
+
+        <div class="dash-menu-card" onclick="App.navigateTo('refleksi')">
+          <div class="dash-icon-wrapper icon-indigo">💭</div>
+          <div class="dash-details">
+            <h3>Refleksi</h3>
+            <p>Catat pengalaman belajarmu dan simpan catatan pribadimu.</p>
+          </div>
+        </div>
+
+        <div class="dash-menu-card" onclick="App.navigateTo('fakta')">
+          <div class="dash-icon-wrapper icon-purple">💡</div>
+          <div class="dash-details">
+            <h3>Tahukah Kamu?</h3>
+            <p>Kartu flip fakta unik sosiologi seputar mobilitas sosial.</p>
+          </div>
+        </div>
+
+        <div class="dash-menu-card" onclick="App.openTeacherMode()">
+          <div class="dash-icon-wrapper icon-teal">📊</div>
+          <div class="dash-details">
+            <h3>Progres Belajar</h3>
+            <p>Pantau rekapan nilai, lencana prestasi, dan Mode Guru.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. MENU MATERI -->
+    <section id="view-materi" class="view-screen">
+      <!-- Sub-navigation tabs -->
+      <div class="subnav-scroll" id="materialTabsNav">
+        <button class="subnav-pill-btn active" onclick="MaterialEngine.showSub(1)">1. Pengertian</button>
+        <button class="subnav-pill-btn" onclick="MaterialEngine.showSub(2)">2. Pendidikan</button>
+        <button class="subnav-pill-btn" onclick="MaterialEngine.showSub(3)">3. Organisasi Politik</button>
+        <button class="subnav-pill-btn" onclick="MaterialEngine.showSub(4)">4. Organisasi Ekonomi</button>
+        <button class="subnav-pill-btn" onclick="MaterialEngine.showSub(5)">5. Organisasi Profesi</button>
+        <button class="subnav-pill-btn" onclick="MaterialEngine.showSub(6)">6. Lembaga Keagamaan</button>
+        <button class="subnav-pill-btn" onclick="MaterialEngine.showSub(7)">7. Peta Konsep</button>
+      </div>
+
+      <!-- Sub 1: Pengertian -->
+      <div id="sub-materi-1" class="materi-pane">
+        <div class="card">
+          <h2 style="color:var(--primary); margin-bottom:0.75rem;">📖 Materi 1: Pengertian Saluran Mobilitas Sosial</h2>
+          <p style="font-size:1.1rem; margin-bottom:1.25rem;">
+            <strong>Saluran mobilitas sosial</strong> adalah sarana atau jalur yang dapat digunakan seseorang untuk melakukan perpindahan status atau kedudukan sosial dalam masyarakat.
+          </p>
+
+          <div style="background:#eff6ff; border-left:5px solid var(--primary); padding:1.2rem; border-radius:var(--radius-sm); margin-bottom:1.5rem;">
+            <h4 style="color:#1e40af; margin-bottom:0.3rem;">💡 Contoh Nyata Siswa SMP:</h4>
+            <p style="font-style:italic; color:#1e3a8a; font-size:1.05rem;">
+              "Seorang siswa <strong>SMP Satu Atap Libaru Sungkai</strong> belajar dengan tekun, memperoleh pendidikan tinggi, kemudian mendapatkan pekerjaan sebagai dokter. Pendidikan menjadi salah satu saluran yang membantu terjadinya mobilitas sosial."
+            </p>
+          </div>
+
+          <h4 style="margin-bottom:0.75rem;">Ilustrasi Animasi Alur Perubahan Status Sosial:</h4>
+          <div class="interactive-pathway">
+            <div class="path-box">🎒 Siswa</div>
+            <span style="font-size:1.5rem; color:var(--primary-light)">➔</span>
+            <div class="path-box">🏫 Sekolah</div>
+            <span style="font-size:1.5rem; color:var(--primary-light)">➔</span>
+            <div class="path-box">🎓 Pendidikan Tinggi</div>
+            <span style="font-size:1.5rem; color:var(--primary-light)">➔</span>
+            <div class="path-box">🩺 Pekerjaan (Dokter)</div>
+            <span style="font-size:1.5rem; color:var(--primary-light)">➔</span>
+            <div class="path-box" style="border-left-color:var(--accent);">⭐ Perubahan Status Sosial</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub 2: Pendidikan -->
+      <div id="sub-materi-2" class="materi-pane" style="display:none;">
+        <div class="card">
+          <h2 style="color:var(--primary); margin-bottom:0.75rem;">🎓 Materi 2: Pendidikan (Social Elevator)</h2>
+          <p style="font-size:1.1rem; margin-bottom:1.25rem;">
+            Pendidikan dapat menjadi salah satu saluran mobilitas sosial karena pendidikan dapat memberikan pengetahuan, keterampilan, dan kesempatan yang mendukung seseorang memperoleh pekerjaan atau kedudukan tertentu.
+          </p>
+
+          <div class="card" style="background:#f0fdfa; border-color:#99f6e4;">
+            <h4 style="color:var(--secondary); margin-bottom:0.35rem;">Kisah Inspiratif Nada:</h4>
+            <p style="font-size:1.05rem; color:#134e4a;">
+              "Nada belajar dengan tekun. Setelah lulus SMP, ia melanjutkan pendidikan hingga perguruan tinggi. Setelah menyelesaikan pendidikan, Nada memperoleh pekerjaan yang sesuai dengan keahliannya."
+            </p>
+          </div>
+
+          <h4 style="margin-bottom:0.5rem;">Ilustrasi Jenjang Mobilitas Nada:</h4>
+          <div class="interactive-pathway">
+            <div class="path-box">🎒 Siswa (Nada)</div>
+            <span style="font-size:1.5rem; color:var(--secondary)">➔</span>
+            <div class="path-box">🏫 Sekolah Menengah</div>
+            <span style="font-size:1.5rem; color:var(--secondary)">➔</span>
+            <div class="path-box">🎓 Perguruan Tinggi</div>
+            <span style="font-size:1.5rem; color:var(--secondary)">➔</span>
+            <div class="path-box" style="border-left-color:var(--success)">💼 Profesi Keahlian</div>
+          </div>
+
+          <div style="background:#fffbeb; border:2px solid #fde68a; padding:1.25rem; border-radius:var(--radius-md); margin-top:1.5rem;">
+            <h4 style="color:#92400e; margin-bottom:0.5rem;">❓ Pertanyaan Interaktif:</h4>
+            <p style="font-size:1rem; margin-bottom:1rem; font-weight:600;">
+              Menurutmu, mengapa pendidikan dapat membuka peluang mobilitas sosial?
+            </p>
+            <div style="display:flex; flex-direction:column; gap:0.6rem;">
+              <button class="btn btn-outline" style="text-align:left; justify-content:flex-start;" onclick="MaterialEngine.checkMiniQuiz(this, true, 'Tepat sekali! Pendidikan membekali kita ilmu pengetahuan dan keahlian nyata.')">
+                A. Karena memberikan bekal keterampilan dan pengetahuan yang diakui masyarakat.
+              </button>
+              <button class="btn btn-outline" style="text-align:left; justify-content:flex-start;" onclick="MaterialEngine.checkMiniQuiz(this, false, 'Kurang tepat. Pendidikan hakikatnya mengembangkan kemampuan dan keahlian nyata.')">
+                B. Hanya untuk mendapatkan selembar ijazah tanpa perlu belajar sungguh-sungguh.
+              </button>
+            </div>
+            <div class="feedback-alert-box" id="miniFeedback2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub 3: Organisasi Politik -->
+      <div id="sub-materi-3" class="materi-pane" style="display:none;">
+        <div class="card">
+          <h2 style="color:var(--primary); margin-bottom:0.75rem;">🏛️ Materi 3: Organisasi Politik</h2>
+          <p style="font-size:1.1rem; margin-bottom:1.25rem;">
+            Organisasi politik dapat menjadi salah satu saluran mobilitas sosial melalui keterlibatan seseorang dalam kegiatan politik dan kehidupan pemerintahan.
+          </p>
+
+          <div class="card" style="background:#f8fafc; border-color:var(--border-color);">
+            <h4 style="color:var(--text-main); margin-bottom:0.35rem;">Contoh Netral dan Edukatif:</h4>
+            <p style="font-size:1.05rem; color:var(--text-muted);">
+              "Juma'ah aktif dalam organisasi politik, mengikuti kegiatan masyarakat, kemudian memperoleh kesempatan untuk menjalankan peran dalam lembaga pemerintahan."
+            </p>
+          </div>
+
+          <h4 style="margin-bottom:0.5rem;">Ilustrasi Keterlibatan Publik:</h4>
+          <div class="interactive-pathway">
+            <div class="path-box">👥 Masyarakat</div>
+            <span style="font-size:1.5rem; color:var(--primary-light)">➔</span>
+            <div class="path-box">🏛️ Organisasi</div>
+            <span style="font-size:1.5rem; color:var(--primary-light)">➔</span>
+            <div class="path-box">🤝 Aktivitas Sosial</div>
+            <span style="font-size:1.5rem; color:var(--primary-light)">➔</span>
+            <div class="path-box" style="border-left-color:var(--secondary)">⚖️ Peran dalam Masyarakat</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub 4: Organisasi Ekonomi -->
+      <div id="sub-materi-4" class="materi-pane" style="display:none;">
+        <div class="card">
+          <h2 style="color:var(--primary); margin-bottom:0.75rem;">💼 Materi 4: Organisasi Ekonomi</h2>
+          <p style="font-size:1.1rem; margin-bottom:1.25rem;">
+            Organisasi atau kegiatan ekonomi dapat menjadi salah satu saluran mobilitas sosial karena memberikan peluang usaha dan peningkatan taraf kesejahteraan seseorang.
+          </p>
+
+          <div class="card" style="background:#fefce8; border-color:#fde047;">
+            <h4 style="color:#854d0e; margin-bottom:0.35rem;">Kisah Inspiratif Silvi:</h4>
+            <p style="font-size:1.05rem; color:#713f12;">
+              "Silvi memulai usaha kecil menjual makanan. Karena tekun dan mampu mengembangkan usahanya, bisnisnya berkembang dan membuka lapangan pekerjaan bagi orang lain."
+            </p>
+          </div>
+
+          <div class="interactive-pathway">
+            <div class="path-box">🏪 Usaha Kecil</div>
+            <span style="font-size:1.5rem; color:var(--accent)">➔</span>
+            <div class="path-box">📈 Berkembang</div>
+            <span style="font-size:1.5rem; color:var(--accent)">➔</span>
+            <div class="path-box">🏢 Usaha Lebih Besar</div>
+            <span style="font-size:1.5rem; color:var(--accent)">➔</span>
+            <div class="path-box" style="border-left-color:var(--success)">👥 Membuka Lapangan Kerja</div>
+          </div>
+
+          <!-- Aktivitas Silvi -->
+          <div style="margin-top:1.5rem; background:#ffffff; border:2px solid var(--border-color); border-radius:var(--radius-md); padding:1.25rem;">
+            <h4 style="color:var(--primary); margin-bottom:0.35rem;">🎯 Aktivitas Interaktif: Urutkan Perjalanan Usaha Silvi!</h4>
+            <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1rem;">
+              Gunakan tombol panah naik (▲) atau turun (▼) untuk menyusun tahapan urutan perjalanan usaha Silvi secara tepat:
+            </p>
+
+            <div class="reorder-list" id="silviReorderList">
+              <div class="reorder-item" data-step="3">
+                <span style="font-weight:700">🏢 Mengembangkan usaha menjadi lebih besar</span>
+                <div class="reorder-btns">
+                  <button class="btn-step-move" onclick="MaterialEngine.moveStep(this, -1)">▲</button>
+                  <button class="btn-step-move" onclick="MaterialEngine.moveStep(this, 1)">▼</button>
+                </div>
+              </div>
+              <div class="reorder-item" data-step="1">
+                <span style="font-weight:700">🏪 Memulai usaha kecil menjual makanan</span>
+                <div class="reorder-btns">
+                  <button class="btn-step-move" onclick="MaterialEngine.moveStep(this, -1)">▲</button>
+                  <button class="btn-step-move" onclick="MaterialEngine.moveStep(this, 1)">▼</button>
+                </div>
+              </div>
+              <div class="reorder-item" data-step="4">
+                <span style="font-weight:700">👥 Membuka lapangan pekerjaan bagi masyarakat</span>
+                <div class="reorder-btns">
+                  <button class="btn-step-move" onclick="MaterialEngine.moveStep(this, -1)">▲</button>
+                  <button class="btn-step-move" onclick="MaterialEngine.moveStep(this, 1)">▼</button>
+                </div>
+              </div>
+              <div class="reorder-item" data-step="2">
+                <span style="font-weight:700">📈 Menjalankan usaha dengan tekun hingga berkembang</span>
+                <div class="reorder-btns">
+                  <button class="btn-step-move" onclick="MaterialEngine.moveStep(this, -1)">▲</button>
+                  <button class="btn-step-move" onclick="MaterialEngine.moveStep(this, 1)">▼</button>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-secondary" onclick="MaterialEngine.checkSilviOrder()">Periksa Urutan Usaha Silvi ✔</button>
+            <div id="silviFeedback" class="feedback-alert-box"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub 5: Organisasi Profesi -->
+      <div id="sub-materi-5" class="materi-pane" style="display:none;">
+        <div class="card">
+          <h2 style="color:var(--primary); margin-bottom:0.75rem;">👥 Materi 5: Organisasi Profesi</h2>
+          <p style="font-size:1.1rem; margin-bottom:1.25rem;">
+            Organisasi profesi dapat menjadi wadah bagi orang-orang yang memiliki bidang pekerjaan atau keahlian tertentu untuk saling membina kompetensi, kode etik, dan pengakuan masyarakat.
+          </p>
+
+          <p style="font-weight:700; color:var(--text-main); margin-bottom:0.5rem;">Contoh profesi di sekitar kita:</p>
+          <div style="display:flex; flex-wrap:wrap; gap:0.6rem; margin-bottom:1.5rem;">
+            <span class="brand-badge" style="background:#e0f2fe; color:#0369a1; border:none; font-size:0.95rem; padding:0.4rem 0.8rem;">👨‍🏫 Guru</span>
+            <span class="brand-badge" style="background:#e0f2fe; color:#0369a1; border:none; font-size:0.95rem; padding:0.4rem 0.8rem;">🩺 Dokter</span>
+            <span class="brand-badge" style="background:#e0f2fe; color:#0369a1; border:none; font-size:0.95rem; padding:0.4rem 0.8rem;">💉 Perawat</span>
+            <span class="brand-badge" style="background:#e0f2fe; color:#0369a1; border:none; font-size:0.95rem; padding:0.4rem 0.8rem;">⚖️ Pengacara</span>
+            <span class="brand-badge" style="background:#e0f2fe; color:#0369a1; border:none; font-size:0.95rem; padding:0.4rem 0.8rem;">📐 Insinyur</span>
+            <span class="brand-badge" style="background:#e0f2fe; color:#0369a1; border:none; font-size:0.95rem; padding:0.4rem 0.8rem;">📊 Akuntan</span>
+          </div>
+
+          <!-- Aktivitas Pasangkan Profesi -->
+          <div style="background:#ffffff; border:2px solid var(--border-color); border-radius:var(--radius-md); padding:1.25rem;">
+            <h4 style="color:var(--primary); margin-bottom:0.35rem;">🎯 Aktivitas: Pasangkan Profesi dengan Wadah Organisasinya!</h4>
+            <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:1rem;">
+              Klik satu profesi di kolom kiri, kemudian klik wadah organisasi yang cocok di kolom kanan.
+            </p>
+
+            <div class="matching-grid-wrapper">
+              <div class="match-col" id="colLeftProfesi">
+                <div class="pair-card" data-match="guru" onclick="MaterialEngine.selectPair(this, 'left')">👨‍🏫 Guru</div>
+                <div class="pair-card" data-match="dokter" onclick="MaterialEngine.selectPair(this, 'left')">🩺 Dokter</div>
+                <div class="pair-card" data-match="perawat" onclick="MaterialEngine.selectPair(this, 'left')">💉 Perawat</div>
+                <div class="pair-card" data-match="pengacara" onclick="MaterialEngine.selectPair(this, 'left')">⚖️ Pengacara</div>
+                <div class="pair-card" data-match="insinyur" onclick="MaterialEngine.selectPair(this, 'left')">📐 Insinyur</div>
+                <div class="pair-card" data-match="akuntan" onclick="MaterialEngine.selectPair(this, 'left')">📊 Akuntan</div>
+              </div>
+
+              <div class="match-col" id="colRightProfesi">
+                <div class="pair-card" data-match="dokter" onclick="MaterialEngine.selectPair(this, 'right')">IDI (Ikatan Dokter Indonesia)</div>
+                <div class="pair-card" data-match="guru" onclick="MaterialEngine.selectPair(this, 'right')">PGRI (Persatuan Guru RI)</div>
+                <div class="pair-card" data-match="pengacara" onclick="MaterialEngine.selectPair(this, 'right')">PERADI (Perhimpunan Advokat)</div>
+                <div class="pair-card" data-match="insinyur" onclick="MaterialEngine.selectPair(this, 'right')">PII (Persatuan Insinyur Indonesia)</div>
+                <div class="pair-card" data-match="akuntan" onclick="MaterialEngine.selectPair(this, 'right')">IAI (Ikatan Akuntan Indonesia)</div>
+                <div class="pair-card" data-match="perawat" onclick="MaterialEngine.selectPair(this, 'right')">PPNI (Persatuan Perawat Nasional)</div>
+              </div>
+            </div>
+
+            <div id="pairFeedback" class="feedback-alert-box"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub 6: Lembaga Keagamaan -->
+      <div id="sub-materi-6" class="materi-pane" style="display:none;">
+        <div class="card">
+          <h2 style="color:var(--primary); margin-bottom:0.75rem;">🤝 Materi 6: Lembaga Keagamaan & Sosial</h2>
+          <p style="font-size:1.1rem; margin-bottom:1.25rem;">
+            Secara objektif dan inklusif, lembaga keagamaan dapat menjadi salah satu saluran mobilitas sosial melalui pendidikan, kegiatan sosial, pelayanan masyarakat, dan pengembangan kemampuan individu.
+          </p>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1rem; margin:1.25rem 0;">
+            <div class="card" style="margin-bottom:0; background:#f8fafc; border-left:4px solid var(--primary);">
+              <h4 style="color:var(--primary); margin-bottom:0.35rem;">✨ Keteladanan Moral</h4>
+              <p style="font-size:0.95rem; color:var(--text-muted);">
+                Seseorang yang santun, berbudi pekerti luhur, dan aktif berbuat kebajikan dihormati serta dipercaya menjadi tokoh panutan warga.
+              </p>
+            </div>
+
+            <div class="card" style="margin-bottom:0; background:#f8fafc; border-left:4px solid var(--secondary);">
+              <h4 style="color:var(--secondary); margin-bottom:0.35rem;">🤝 Aksi Sosial Nyata</h4>
+              <p style="font-size:0.95rem; color:var(--text-muted);">
+                Melalui program beasiswa anak asuh, balai latihan keterampilan, dan santunan sosial yang membantu anak-anak berprestasi untuk maju.
+              </p>
+            </div>
+          </div>
+
+          <div class="card" style="background:#f0fdf4; border-color:#86efac;">
+            <h4 style="color:#166534; margin-bottom:0.25rem;">Nilai Keberagaman & Toleransi</h4>
+            <p style="color:#15803d; font-size:0.95rem;">
+              Seluruh lembaga keagamaan di Indonesia menjunjung tinggi persaudaraan dan gotong royong tanpa membeda-bedakan suku maupun keyakinan.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub 7: Peta Konsep -->
+      <div id="sub-materi-7" class="materi-pane" style="display:none;">
+        <div class="card">
+          <h2 style="color:var(--primary); margin-bottom:0.75rem;">🗺️ Materi 7: Saluran Mobilitas Sosial dalam Kehidupan Sehari-hari</h2>
+          <p style="color:var(--text-muted); font-size:1rem; margin-bottom:1.25rem;">
+            Klik setiap cabang di bawah ini untuk melihat rangkuman intisari, contoh, dan pertanyaan mini!
+          </p>
+
+          <div class="mindmap-wrapper">
+            <div class="mindmap-center">SALURAN MOBILITAS SOSIAL</div>
+
+            <div class="mindmap-branches-grid">
+              <div class="mindmap-branch-btn" onclick="MaterialEngine.showBranch('pendidikan')">🎓 Pendidikan</div>
+              <div class="mindmap-branch-btn" onclick="MaterialEngine.showBranch('politik')">🏛️ Organisasi Politik</div>
+              <div class="mindmap-branch-btn" onclick="MaterialEngine.showBranch('ekonomi')">💼 Organisasi Ekonomi</div>
+              <div class="mindmap-branch-btn" onclick="MaterialEngine.showBranch('profesi')">👥 Organisasi Profesi</div>
+              <div class="mindmap-branch-btn" onclick="MaterialEngine.showBranch('keagamaan')">🤝 Lembaga Keagamaan</div>
+            </div>
+
+            <div id="branchDetailBox" class="card" style="width:100%; margin-top:1rem; background:#f8fafc; display:none;">
+              <h3 id="branchTitle" style="color:var(--primary); margin-bottom:0.5rem;">-</h3>
+              <p id="branchDef" style="font-size:1rem; margin-bottom:0.5rem;">-</p>
+              <div style="background:#eff6ff; padding:0.75rem 1rem; border-radius:var(--radius-sm); margin-bottom:0.75rem; font-size:0.95rem;" id="branchEx">-</div>
+              <div style="font-weight:700; color:var(--secondary); font-size:0.95rem;" id="branchMiniQ">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-flow-nav">
+        <button class="btn btn-outline" onclick="App.navigateTo('menu')">🏠 Menu Utama</button>
+        <div style="display:flex; gap:0.5rem;">
+          <button class="btn btn-outline" onclick="MaterialEngine.prevSub()">← Sebelumnya</button>
+          <button class="btn btn-primary" onclick="MaterialEngine.nextSub()">Berikutnya →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. KUIS INTERAKTIF -->
+    <section id="view-kuis" class="view-screen">
+      <div class="quiz-card-container">
+        <div class="quiz-status-header">
+          <div>
+            <span class="brand-badge" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">KUIS INTERAKTIF</span>
+            <span id="quizCounterText" style="margin-left:0.6rem; font-weight:800; color:var(--text-muted);">Soal 1 dari 10</span>
+          </div>
+          <div style="font-weight:900; font-size:1.2rem; color:var(--primary);" id="quizScoreDisplay">
+            Skor Sementara: 0 / 100
+          </div>
+        </div>
+
+        <div class="question-prompt" id="quizQuestionText">Memuat soal kuis...</div>
+        <div class="answers-group" id="quizOptionsList"></div>
+
+        <div id="quizAlertBox" class="feedback-alert-box"></div>
+
+        <div style="display:flex; justify-content:flex-end; margin-top:1rem;">
+          <button class="btn btn-primary" id="btnNextQuiz" style="display:none;" onclick="QuizRunner.next()">
+            Soal Selanjutnya ➔
+          </button>
+        </div>
+      </div>
+
+      <div class="bottom-flow-nav">
+        <button class="btn btn-outline" onclick="App.navigateTo('menu')">🏠 Home</button>
+        <button class="btn btn-secondary" onclick="QuizRunner.restart()">🔄 Ulangi Kuis</button>
+      </div>
+    </section>
+
+    <!-- 6. TANTANGAN -->
+    <section id="view-tantangan" class="view-screen">
+      <div class="card">
+        <h2 style="color:var(--primary); margin-bottom:0.5rem; display:flex; align-items:center; gap:0.6rem;">
+          🏆 Tantangan Mobilitas Sosial
+        </h2>
+        <p style="color:var(--text-muted); margin-bottom:1.5rem;">
+          Selesaikan 3 kasus nyata di bawah ini untuk membuka lencana kehormatan <strong>🏅 Detektif Mobilitas Sosial</strong>!
+        </p>
+
+        <!-- Tantangan 1 -->
+        <div class="card" style="background:#f8fafc; border-left:5px solid var(--primary);">
+          <h4 style="font-size:1.1rem; color:var(--text-main);">Tantangan 1: Cita-Cita Masa Depan</h4>
+          <p style="font-size:1rem; margin:0.6rem 0;">
+            "Bayangkan kamu ingin memiliki profesi yang kamu cita-citakan, seperti menjadi seorang Dokter Spesialis atau Arsitek Ternama. Pilih jalur yang paling awal dan tepat!"
+          </p>
+          <div style="display:flex; flex-wrap:wrap; gap:0.6rem; margin-top:0.75rem;">
+            <button class="btn btn-outline" onclick="ChallengeEngine.chooseT1('pendidikan')">🎓 Pendidikan</button>
+            <button class="btn btn-outline" onclick="ChallengeEngine.chooseT1('ekonomi')">💼 Pekerjaan / Ekonomi Langsung</button>
+            <button class="btn btn-outline" onclick="ChallengeEngine.chooseT1('profesi')">👥 Organisasi Profesi</button>
+            <button class="btn btn-outline" onclick="ChallengeEngine.chooseT1('politik')">🏛️ Organisasi Politik</button>
+            <button class="btn btn-outline" onclick="ChallengeEngine.chooseT1('sosial')">🤝 Kegiatan Sosial / Keagamaan</button>
+          </div>
+          <div id="t1ResultBox" class="feedback-alert-box"></div>
+        </div>
+
+        <!-- Tantangan 2 -->
+        <div class="card" style="background:#f8fafc; border-left:5px solid var(--secondary);">
+          <h4 style="font-size:1.1rem; color:var(--text-main);">Tantangan 2: Susun Jalurnya</h4>
+          <p style="font-size:1rem; margin:0.6rem 0;">
+            Susun langkah-langkah menuju keberhasilan mobilitas sosial secara logis dari atas ke bawah:
+          </p>
+          <div class="reorder-list" id="t2StepList">
+            <div class="reorder-item" data-val="3">
+              <span style="font-weight:700">Mendapatkan pekerjaan</span>
+              <div class="reorder-btns">
+                <button class="btn-step-move" onclick="ChallengeEngine.moveStep(this, -1)">▲</button>
+                <button class="btn-step-move" onclick="ChallengeEngine.moveStep(this, 1)">▼</button>
+              </div>
+            </div>
+            <div class="reorder-item" data-val="1">
+              <span style="font-weight:700">Mengikuti pendidikan</span>
+              <div class="reorder-btns">
+                <button class="btn-step-move" onclick="ChallengeEngine.moveStep(this, -1)">▲</button>
+                <button class="btn-step-move" onclick="ChallengeEngine.moveStep(this, 1)">▼</button>
+              </div>
+            </div>
+            <div class="reorder-item" data-val="2">
+              <span style="font-weight:700">Memperoleh keterampilan & mengembangkan kemampuan</span>
+              <div class="reorder-btns">
+                <button class="btn-step-move" onclick="ChallengeEngine.moveStep(this, -1)">▲</button>
+                <button class="btn-step-move" onclick="ChallengeEngine.moveStep(this, 1)">▼</button>
+              </div>
+            </div>
+            <div class="reorder-item" data-val="4">
+              <span style="font-weight:700">Memperoleh kesempatan baru untuk peningkatan status</span>
+              <div class="reorder-btns">
+                <button class="btn-step-move" onclick="ChallengeEngine.moveStep(this, -1)">▲</button>
+                <button class="btn-step-move" onclick="ChallengeEngine.moveStep(this, 1)">▼</button>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-secondary" onclick="ChallengeEngine.checkOrderT2()">Periksa Susunan Jalur ✔</button>
+          <div id="t2ResultBox" class="feedback-alert-box"></div>
+        </div>
+
+        <!-- Tantangan 3 -->
+        <div class="card" style="background:#f8fafc; border-left:5px solid var(--accent);">
+          <h4 style="font-size:1.1rem; color:var(--text-main);">Tantangan 3: Detektif Mobilitas Sosial</h4>
+          <p style="font-size:1rem; margin:0.6rem 0;">
+            <em>"Dewi berasal dari keluarga sederhana. Ia rajin belajar, mendapatkan pendidikan yang lebih tinggi, lalu memperoleh pekerjaan sesuai keahliannya."</em>
+          </p>
+          <p style="font-weight:800; font-size:1rem;">Saluran mobilitas sosial apa yang paling jelas terlihat?</p>
+          <div style="display:flex; flex-wrap:wrap; gap:0.6rem; margin-top:0.75rem;">
+            <button class="btn btn-outline" onclick="ChallengeEngine.chooseT3('pendidikan')">🎓 Saluran Pendidikan</button>
+            <button class="btn btn-outline" onclick="ChallengeEngine.chooseT3('politik')">🏛️ Partai Politik</button>
+            <button class="btn btn-outline" onclick="ChallengeEngine.chooseT3('militer')">🛡️ Lembaga Militer</button>
+          </div>
+          <div id="t3ResultBox" class="feedback-alert-box"></div>
+        </div>
+
+        <div class="bottom-flow-nav">
+          <button class="btn btn-outline" onclick="App.navigateTo('menu')">🏠 Menu Utama</button>
+          <button class="btn btn-primary" onclick="App.navigateTo('evaluasi')">Lanjut Evaluasi Akhir →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. EVALUASI AKHIR -->
+    <section id="view-evaluasi" class="view-screen">
+      <div id="evaluasiQuizArea" class="quiz-card-container">
+        <div class="quiz-status-header">
+          <div>
+            <span class="brand-badge" style="background:#dcfce7; color:#15803d; border-color:#86efac;">EVALUASI AKHIR</span>
+            <span id="evalCounterText" style="margin-left:0.6rem; font-weight:800; color:var(--text-muted);">Soal 1 dari 10</span>
+          </div>
+          <div style="font-weight:900; font-size:1.2rem; color:var(--secondary);" id="evalScoreDisplay">
+            Skor: 0 / 100
+          </div>
+        </div>
+
+        <div class="question-prompt" id="evalQuestionText">Memuat soal evaluasi...</div>
+        <div class="answers-group" id="evalOptionsList"></div>
+
+        <div id="evalAlertBox" class="feedback-alert-box"></div>
+
+        <div style="display:flex; justify-content:flex-end; margin-top:1rem;">
+          <button class="btn btn-secondary" id="btnNextEval" style="display:none;" onclick="EvalRunner.next()">
+            Soal Selanjutnya ➔
+          </button>
+        </div>
+      </div>
+
+      <!-- Hasil Rekap Evaluasi -->
+      <div id="evaluasiResultArea" class="card" style="display:none; text-align:center;">
+        <div style="font-size:3.5rem; margin-bottom:0.5rem;">📊</div>
+        <h2 id="evalCategoryTitle" style="color:var(--primary); margin-bottom:0.4rem;">-</h2>
+        <p id="evalCategoryDesc" style="font-size:1.1rem; color:var(--text-muted); max-width:650px; margin:0 auto 1.5rem;">-</p>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:1rem; max-width:680px; margin:0 auto 1.5rem;">
+          <div class="card" style="margin:0; background:#f0fdf4;">
+            <div style="font-size:1.8rem; font-weight:900; color:#166534;" id="evalFinalScore">0</div>
+            <div style="font-size:0.9rem; color:#15803d; font-weight:700;">Skor Akhir</div>
+          </div>
+          <div class="card" style="margin:0; background:#eff6ff;">
+            <div style="font-size:1.8rem; font-weight:900; color:#1e40af;" id="evalCorrectCount">0</div>
+            <div style="font-size:0.9rem; color:#2563eb; font-weight:700;">Jawaban Benar</div>
+          </div>
+          <div class="card" style="margin:0; background:#fef2f2;">
+            <div style="font-size:1.8rem; font-weight:900; color:#991b1b;" id="evalWrongCount">0</div>
+            <div style="font-size:0.9rem; color:#b91c1c; font-weight:700;">Jawaban Salah</div>
+          </div>
+          <div class="card" style="margin:0; background:#fffbeb;">
+            <div style="font-size:1.8rem; font-weight:900; color:#b45309;" id="evalPercentText">0%</div>
+            <div style="font-size:0.9rem; color:#d97706; font-weight:700;">Persentase</div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:center; gap:0.75rem; flex-wrap:wrap;">
+          <button class="btn btn-secondary" onclick="EvalRunner.restart()">🔄 Ulangi Evaluasi</button>
+          <button class="btn btn-outline" onclick="App.navigateTo('menu')">🏠 Kembali ke Menu</button>
+          <button class="btn btn-primary" onclick="App.navigateTo('penutup')">Halaman Penutup 🎓</button>
+        </div>
+      </div>
+
+      <div class="bottom-flow-nav">
+        <button class="btn btn-outline" onclick="App.navigateTo('menu')">🏠 Menu Utama</button>
+      </div>
+    </section>
+
+    <!-- 8. REFLEKSI -->
+    <section id="view-refleksi" class="view-screen">
+      <div class="card">
+        <h2 style="color:var(--primary); margin-bottom:0.5rem; display:flex; align-items:center; gap:0.6rem;">
+          💭 Lembar Refleksi Pembelajaran
+        </h2>
+        <p style="color:var(--text-muted); margin-bottom:1.5rem;">
+          Refleksikan apa yang telah kamu pelajari hari ini. Data refleksi ini disimpan secara aman dan offline pada browser perambanmu.
+        </p>
+
+        <h4 style="margin-bottom:0.8rem; font-size:1.05rem;">1. Apa hal baru yang kamu pelajari hari ini? (Boleh centang lebih dari satu)</h4>
+        <div style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.5rem;">
+          <label style="display:flex; align-items:center; gap:0.75rem; cursor:pointer; font-size:1rem;">
+            <input type="checkbox" id="refCheck1" style="width:20px; height:20px;">
+            <span>Pendidikan dapat menjadi saluran mobilitas sosial (social elevator).</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:0.75rem; cursor:pointer; font-size:1rem;">
+            <input type="checkbox" id="refCheck2" style="width:20px; height:20px;">
+            <span>Organisasi dapat menjadi saluran mobilitas sosial (politik & profesi).</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:0.75rem; cursor:pointer; font-size:1rem;">
+            <input type="checkbox" id="refCheck3" style="width:20px; height:20px;">
+            <span>Kegiatan ekonomi dapat membuka peluang perubahan status sosial.</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:0.75rem; cursor:pointer; font-size:1rem;">
+            <input type="checkbox" id="refCheck4" style="width:20px; height:20px;">
+            <span>Saya masih ingin mempelajari materi ini lebih lanjut.</span>
+          </label>
+        </div>
+
+        <h4 style="margin-bottom:0.5rem; font-size:1.05rem;">2. Tuliskan satu hal yang paling kamu ingat dari pembelajaran hari ini:</h4>
+        <textarea id="refNoteText" rows="4" style="width:100%; border:2px solid var(--border-color); border-radius:var(--radius-md); padding:0.9rem; font-size:1rem; resize:vertical; margin-bottom:1.25rem;" placeholder="Tuliskan pengalaman atau motivasi belajarmu di sini..."></textarea>
+
+        <div style="display:flex; gap:1rem; align-items:center; flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="App.saveReflection()">💾 Simpan Refleksi</button>
+          <span id="refSaveAlert" style="font-size:0.95rem; color:var(--success); font-weight:700;"></span>
+        </div>
+
+        <div class="bottom-flow-nav">
+          <button class="btn btn-outline" onclick="App.navigateTo('menu')">🏠 Menu Utama</button>
+          <button class="btn btn-secondary" onclick="App.navigateTo('fakta')">Lanjut Tahukah Kamu? 💡</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. TAHUKAH KAMU? -->
+    <section id="view-fakta" class="view-screen">
+      <div class="card" style="text-align:center;">
+        <span class="brand-badge" style="background:#fef3c7; color:#b45309; border-color:#fde68a;">FAKTA UNIK SOSIOLOGI</span>
+        <h2 style="color:var(--text-main); margin:0.6rem 0 1rem;">💡 Tahukah Kamu?</h2>
+        <p style="color:var(--text-muted); font-size:1rem; max-width:600px; margin:0 auto 1.5rem;">
+          Klik kartu di bawah untuk membalik kartu dan membaca wawasan menarik seputar saluran mobilitas sosial!
+        </p>
+
+        <div class="card-flip-stage">
+          <div class="card-flip-inner" id="factCardBox" onclick="FactManager.toggle()">
+            <div class="card-front">
+              <div style="font-size:3.5rem; margin-bottom:0.8rem;" id="factFrontIcon">💡</div>
+              <h3 id="factFrontTitle" style="color:var(--primary); margin-bottom:0.5rem;">Pendidikan Bukan Satu-Satunya</h3>
+              <p style="color:var(--text-muted); font-size:1rem;">Ketuk kartu ini untuk membalik dan membaca penjelasan! ➔</p>
+            </div>
+            <div class="card-back">
+              <div style="font-size:2.8rem; margin-bottom:0.5rem;">✨</div>
+              <p id="factBackText" style="font-size:1.15rem; line-height:1.6; font-weight:600;">
+                "Pendidikan bukan satu-satunya saluran mobilitas sosial. Kesempatan untuk meningkatkan status sosial juga dapat berkaitan dengan kegiatan ekonomi, organisasi profesi, organisasi politik, dan lembaga sosial lainnya."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:center; gap:1rem; margin-top:1.5rem;">
+          <button class="btn btn-outline" onclick="FactManager.prev()">← Fakta Sebelumnya</button>
+          <button class="btn btn-accent" onclick="FactManager.next()">Fakta Berikutnya →</button>
+        </div>
+
+        <div class="bottom-flow-nav">
+          <button class="btn btn-outline" onclick="App.navigateTo('menu')">🏠 Menu Utama</button>
+          <button class="btn btn-primary" onclick="App.navigateTo('tantangan')">Menuju Tantangan 🏆</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. HALAMAN PENUTUP -->
+    <section id="view-penutup" class="view-screen">
+      <div class="card" style="text-align:center; padding:3rem 1.5rem;">
+        <div style="font-size:4rem; margin-bottom:0.5rem;">🎉🎓</div>
+        <h1 style="color:var(--primary); font-size:2.4rem; font-weight:900; margin-bottom:0.5rem;">SELAMAT!</h1>
+        <p style="font-size:1.2rem; color:var(--text-main); max-width:700px; margin:0 auto 1.5rem;">
+          Kamu telah menyelesaikan pembelajaran tentang <strong>Saluran-Saluran Mobilitas Sosial</strong>.
+        </p>
+
+        <div style="background:#eff6ff; border-radius:var(--radius-lg); padding:1.75rem; max-width:750px; margin:0 auto 2rem; border:2px solid #bfdbfe; text-align:left;">
+          <h4 style="color:#1e40af; margin-bottom:0.5rem; font-size:1.1rem;">📌 Ringkasan Penting:</h4>
+          <p style="color:#1e3a8a; font-size:1.05rem; line-height:1.6;">
+            Mobilitas sosial dapat terjadi melalui berbagai saluran, seperti <strong>pendidikan</strong>, <strong>organisasi politik</strong>, <strong>organisasi ekonomi</strong>, <strong>organisasi profesi</strong>, dan <strong>lembaga sosial lainnya</strong>.
+          </p>
+          <p style="color:#1e3a8a; font-weight:800; margin-top:0.75rem; font-size:1.05rem;">
+            "Terus belajar, kembangkan kemampuanmu, dan manfaatkan kesempatan positif di sekitarmu!"
+          </p>
+        </div>
+
+        <!-- Terintegrasi: Skor Akhir & Badge -->
+        <h3 style="margin-bottom:1rem; font-size:1.3rem;">⭐ Koleksi Lencana Keberhasilanmu:</h3>
+        <div class="badges-flex-grid">
+          <div class="badge-card" id="endBadge1">
+            <div class="badge-icon">🏅</div>
+            <div class="badge-title">Pembelajar Aktif</div>
+          </div>
+          <div class="badge-card" id="endBadge2">
+            <div class="badge-icon">🎯</div>
+            <div class="badge-title">Penjawab Tepat</div>
+          </div>
+          <div class="badge-card" id="endBadge3">
+            <div class="badge-icon">🏆</div>
+            <div class="badge-title">Detektif Mobilitas</div>
+          </div>
+          <div class="badge-card" id="endBadge4">
+            <div class="badge-icon">⭐</div>
+            <div class="badge-title">Master Mobilitas</div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; margin-top:1.5rem;">
+          <button class="btn btn-secondary" onclick="App.navigateTo('cover')">🔄 Ulangi Pembelajaran</button>
+          <button class="btn btn-primary" onclick="App.navigateTo('menu')">🏠 Kembali ke Menu Utama</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL MODE GURU -->
+  <div class="modal-backdrop" id="teacherModalBox">
+    <div class="modal-surface">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+        <h3 style="color:var(--primary); font-size:1.35rem; display:flex; align-items:center; gap:0.5rem;">
+          👨‍🏫 Dashboard Mode Guru
+        </h3>
+        <button class="btn btn-outline btn-icon" onclick="App.closeTeacherMode()">✕</button>
+      </div>
+
+      <div style="background:#f8fafc; border-radius:var(--radius-md); padding:1.2rem; margin-bottom:1.25rem; border:1px solid var(--border-color);">
+        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:1rem;">
+          Rekapitulasi pencapaian aktivitas peserta didik yang tersimpan secara offline di peramban ini:
+        </p>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1rem;">
+          <div style="background:#ffffff; padding:0.85rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+            <div style="font-size:0.8rem; color:var(--text-muted); font-weight:700;">Skor Kuis</div>
+            <div style="font-size:1.4rem; font-weight:900; color:var(--primary);" id="tScoreQuiz">0 / 100</div>
+          </div>
+          <div style="background:#ffffff; padding:0.85rem; border-radius:var(--radius-sm); border:1px solid var(--border-color);">
+            <div style="font-size:0.8rem; color:var(--text-muted); font-weight:700;">Skor Evaluasi</div>
+            <div style="font-size:1.4rem; font-weight:900; color:var(--secondary);" id="tScoreEval">0 / 100</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:0.75rem;">
+          <div style="display:flex; justify-content:space-between; font-size:0.9rem; font-weight:800; margin-bottom:0.35rem;">
+            <span>Total Progres Pembelajaran:</span>
+            <span id="tProgressVal">0%</span>
+          </div>
+          <div style="height:10px; background:#e2e8f0; border-radius:var(--radius-full); overflow:hidden;">
+            <div id="tProgressBar" style="height:100%; width:0%; background:linear-gradient(90deg, var(--secondary), var(--primary)); transition:width 0.3s;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.5rem;">
+        <h4 style="font-size:1rem; margin-bottom:0.5rem;">Catatan Refleksi Terakhir Siswa:</h4>
+        <div id="tReflectBox" style="background:#ffffff; border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:0.85rem; font-size:0.95rem; font-style:italic; min-height:55px; max-height:100px; overflow-y:auto; color:var(--text-main);">
+          Belum ada catatan refleksi yang tersimpan.
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; gap:0.6rem; flex-wrap:wrap;">
+        <button class="btn btn-outline" style="color:var(--danger); border-color:#fca5a5;" onclick="App.askReset()">
+          ⚠️ Reset Progres Siswa
+        </button>
+        <button class="btn btn-primary" onclick="App.closeTeacherMode()">Tutup Panel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Konfirmasi Hapus Data (Tanpa window.alert / confirm) -->
+  <div class="modal-backdrop" id="resetConfirmModal">
+    <div class="modal-surface" style="max-width:420px; text-align:center;">
+      <div style="font-size:3rem; margin-bottom:0.5rem; color:var(--danger)">⚠️</div>
+      <h3 style="margin-bottom:0.5rem;">Konfirmasi Reset Data</h3>
+      <p style="font-size:0.95rem; color:var(--text-muted); margin-bottom:1.5rem;">
+        Apakah Anda yakin ingin mereset seluruh progres pembelajaran, skor kuis, evaluasi, dan catatan refleksi di perangkat ini?
+      </p>
+      <div style="display:flex; justify-content:center; gap:0.75rem;">
+        <button class="btn btn-outline" onclick="App.cancelReset()">Batal</button>
+        <button class="btn btn-primary" style="background:var(--danger);" onclick="App.executeReset()">Ya, Reset Sekarang</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SoundSynth = {
+      enabled: true,
+      ctx: null,
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+      },
+
+      toggle() {
+        this.enabled = !this.enabled;
+        const btn = document.getElementById('btnSoundToggle');
+        if (btn) {
+          btn.textContent = this.enabled ? '🔊' : '🔇';
+          btn.title = this.enabled ? 'Suara Aktif' : 'Suara Hening';
+        }
+      },
+
+      tone(freq = 440, type = 'sine', duration = 0.12) {
+        if (!this.enabled) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+          }
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch (e) {
+          // Audio safe fallback
+        }
+      },
+
+      correct() {
+        this.tone(523.25, 'triangle', 0.1);
+        setTimeout(() => this.tone(659.25, 'triangle', 0.15), 100);
+      },
+
+      wrong() {
+        this.tone(250, 'sawtooth', 0.2);
+      },
+
+      click() {
+        this.tone(480, 'sine', 0.05);
+      }
+    };
+
+    const StorageKey = 'mpi_mobilitas_ips8_offline';
+
+    const AppState = {
+      progress: {
+        readMateri: false,
+        quizDone: false,
+        challengeDone: false,
+        evalDone: false,
+        reflectionDone: false
+      },
+      scores: {
+        quiz: 0,
+        challenge: 0,
+        eval: 0
+      },
+      badges: {
+        activeLearner: false,     // 🏅 Pembelajar Aktif
+        accurateAnswerer: false,  // 🎯 Penjawab Tepat
+        detective: false,         // 🏆 Detektif Mobilitas Sosial
+        master: false             // ⭐ Master Mobilitas Sosial
+      },
+      reflection: {
+        checked: [],
+        note: ''
+      },
+
+      load() {
+        try {
+          const raw = localStorage.getItem(StorageKey);
+          if (raw) {
+            const data = JSON.parse(raw);
+            this.progress = { ...this.progress, ...data.progress };
+            this.scores = { ...this.scores, ...data.scores };
+            this.badges = { ...this.badges, ...data.badges };
+            this.reflection = { ...this.reflection, ...data.reflection };
+          }
+        } catch (e) {
+          console.warn("Storage load warning", e);
+        }
+      },
+
+      save() {
+        try {
+          localStorage.setItem(StorageKey, JSON.stringify({
+            progress: this.progress,
+            scores: this.scores,
+            badges: this.badges,
+            reflection: this.reflection
+          }));
+        } catch (e) {
+          console.warn("Storage save warning", e);
+        }
+        App.updateProgress();
+      },
+
+      calcPercent() {
+        let p = 0;
+        if (this.progress.readMateri) p += 25;
+        if (this.progress.quizDone) p += 25;
+        if (this.progress.challengeDone) p += 15;
+        if (this.progress.evalDone) p += 25;
+        if (this.progress.reflectionDone) p += 10;
+        return Math.min(100, p);
+      }
+    };
+
+    const App = {
+      init() {
+        AppState.load();
+        this.updateProgress();
+        QuizRunner.init();
+        EvalRunner.init();
+        FactManager.init();
+        this.restoreReflectionUI();
+      },
+
+      navigateTo(viewName) {
+        SoundSynth.click();
+        document.querySelectorAll('.view-screen').forEach(el => el.classList.remove('active'));
+        const screen = document.getElementById(`view-${viewName}`);
+        if (screen) {
+          screen.classList.add('active');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        if (viewName === 'materi') {
+          AppState.progress.readMateri = true;
+          AppState.badges.activeLearner = true;
+          AppState.save();
+        }
+
+        if (viewName === 'penutup') {
+          this.refreshEndBadges();
+        }
+      },
+
+      updateProgress() {
+        const pct = AppState.calcPercent();
+        const topBar = document.getElementById('topProgressBar');
+        if (topBar) topBar.style.width = pct + '%';
+
+        const tBar = document.getElementById('tProgressBar');
+        const tVal = document.getElementById('tProgressVal');
+        if (tBar) tBar.style.width = pct + '%';
+        if (tVal) tVal.textContent = pct + '%';
+
+        const qVal = document.getElementById('tScoreQuiz');
+        if (qVal) qVal.textContent = AppState.scores.quiz + ' / 100';
+
+        const eVal = document.getElementById('tScoreEval');
+        if (eVal) eVal.textContent = AppState.scores.eval + ' / 100';
+
+        const refBox = document.getElementById('tReflectBox');
+        if (refBox) {
+          refBox.textContent = AppState.reflection.note.trim() ? `"${AppState.reflection.note}"` : 'Belum ada catatan refleksi tersimpan.';
+        }
+      },
+
+      refreshEndBadges() {
+        const b1 = document.getElementById('endBadge1');
+        const b2 = document.getElementById('endBadge2');
+        const b3 = document.getElementById('endBadge3');
+        const b4 = document.getElementById('endBadge4');
+
+        if (AppState.badges.activeLearner && b1) b1.classList.add('unlocked');
+        if (AppState.badges.accurateAnswerer && b2) b2.classList.add('unlocked');
+        if (AppState.badges.detective && b3) b3.classList.add('unlocked');
+        if ((AppState.scores.eval >= 80 || AppState.calcPercent() >= 90) && b4) {
+          AppState.badges.master = true;
+          b4.classList.add('unlocked');
+        }
+      },
+
+      openTeacherMode() {
+        this.updateProgress();
+        document.getElementById('teacherModalBox').classList.add('is-open');
+      },
+
+      closeTeacherMode() {
+        document.getElementById('teacherModalBox').classList.remove('is-open');
+      },
+
+      askReset() {
+        document.getElementById('resetConfirmModal').classList.add('is-open');
+      },
+
+      cancelReset() {
+        document.getElementById('resetConfirmModal').classList.remove('is-open');
+      },
+
+      executeReset() {
+        localStorage.removeItem(StorageKey);
+        AppState.progress = { readMateri: false, quizDone: false, challengeDone: false, evalDone: false, reflectionDone: false };
+        AppState.scores = { quiz: 0, challenge: 0, eval: 0 };
+        AppState.badges = { activeLearner: false, accurateAnswerer: false, detective: false, master: false };
+        AppState.reflection = { checked: [], note: '' };
+
+        this.cancelReset();
+        this.closeTeacherMode();
+        QuizRunner.restart();
+        EvalRunner.restart();
+        this.restoreReflectionUI();
+        this.updateProgress();
+        this.navigateTo('cover');
+      },
+
+      saveReflection() {
+        const c1 = document.getElementById('refCheck1')?.checked;
+        const c2 = document.getElementById('refCheck2')?.checked;
+        const c3 = document.getElementById('refCheck3')?.checked;
+        const c4 = document.getElementById('refCheck4')?.checked;
+        const note = document.getElementById('refNoteText')?.value || '';
+
+        AppState.reflection.checked = [c1, c2, c3, c4];
+        AppState.reflection.note = note;
+        AppState.progress.reflectionDone = true;
+        AppState.save();
+
+        SoundSynth.correct();
+        const alertSpan = document.getElementById('refSaveAlert');
+        if (alertSpan) {
+          alertSpan.textContent = '✔ Refleksi berhasil disimpan secara lokal!';
+          setTimeout(() => { alertSpan.textContent = ''; }, 3000);
+        }
+      },
+
+      restoreReflectionUI() {
+        if (AppState.reflection.checked && AppState.reflection.checked.length) {
+          if (document.getElementById('refCheck1')) document.getElementById('refCheck1').checked = !!AppState.reflection.checked[0];
+          if (document.getElementById('refCheck2')) document.getElementById('refCheck2').checked = !!AppState.reflection.checked[1];
+          if (document.getElementById('refCheck3')) document.getElementById('refCheck3').checked = !!AppState.reflection.checked[2];
+          if (document.getElementById('refCheck4')) document.getElementById('refCheck4').checked = !!AppState.reflection.checked[3];
+        }
+        if (document.getElementById('refNoteText')) {
+          document.getElementById('refNoteText').value = AppState.reflection.note || '';
+        }
+      }
+    };
+
+    const MaterialEngine = {
+      subIndex: 1,
+      totalSubs: 7,
+      pairLeft: null,
+      pairRight: null,
+
+      showSub(index) {
+        SoundSynth.click();
+        this.subIndex = index;
+        document.querySelectorAll('.materi-pane').forEach((pane, i) => {
+          pane.style.display = (i + 1 === index) ? 'block' : 'none';
+        });
+        document.querySelectorAll('.subnav-pill-btn').forEach((btn, i) => {
+          if (i + 1 === index) btn.classList.add('active');
+          else btn.classList.remove('active');
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+
+      nextSub() {
+        if (this.subIndex < this.totalSubs) {
+          this.showSub(this.subIndex + 1);
+        } else {
+          App.navigateTo('kuis');
+        }
+      },
+
+      prevSub() {
+        if (this.subIndex > 1) {
+          this.showSub(this.subIndex - 1);
+        }
+      },
+
+      checkMiniQuiz(btn, isCorrect, msg) {
+        const box = document.getElementById('miniFeedback2');
+        if (isCorrect) {
+          SoundSynth.correct();
+          box.className = 'feedback-alert-box correct';
+          box.textContent = '✔ ' + msg;
+        } else {
+          SoundSynth.wrong();
+          box.className = 'feedback-alert-box wrong';
+          box.textContent = '✖ ' + msg;
+        }
+      },
+
+      moveStep(btn, dir) {
+        SoundSynth.click();
+        const item = btn.closest('.reorder-item');
+        const container = item.parentElement;
+        if (dir === -1 && item.previousElementSibling) {
+          container.insertBefore(item, item.previousElementSibling);
+        } else if (dir === 1 && item.nextElementSibling) {
+          container.insertBefore(item.nextElementSibling, item);
+        }
+      },
+
+      checkSilviOrder() {
+        const container = document.getElementById('silviReorderList');
+        const steps = Array.from(container.children).map(el => el.getAttribute('data-step')).join('');
+        const fb = document.getElementById('silviFeedback');
+
+        if (steps === '1234') {
+          SoundSynth.correct();
+          fb.className = 'feedback-alert-box correct';
+          fb.textContent = '✔ Tepat Sekali! Perjalanan usaha Silvi berawal dari usaha kecil, ditekuni, berkembang lebih besar, hingga membuka lapangan kerja bagi sesama.';
+        } else {
+          SoundSynth.wrong();
+          fb.className = 'feedback-alert-box wrong';
+          fb.textContent = '✖ Susunan belum berurutan secara tepat. Pikirkan langkah awal dari merintis warung kecil terlebih dahulu!';
+        }
+      },
+
+      selectPair(element, side) {
+        if (element.classList.contains('paired-success')) return;
+        SoundSynth.click();
+
+        if (side === 'left') {
+          document.querySelectorAll('#colLeftProfesi .pair-card').forEach(c => c.classList.remove('active-selected'));
+          element.classList.add('active-selected');
+          this.pairLeft = element;
+        } else {
+          document.querySelectorAll('#colRightProfesi .pair-card').forEach(c => c.classList.remove('active-selected'));
+          element.classList.add('active-selected');
+          this.pairRight = element;
+        }
+
+        if (this.pairLeft && this.pairRight) {
+          const keyL = this.pairLeft.getAttribute('data-match');
+          const keyR = this.pairRight.getAttribute('data-match');
+          const fb = document.getElementById('pairFeedback');
+
+          if (keyL === keyR) {
+            SoundSynth.correct();
+            this.pairLeft.classList.remove('active-selected');
+            this.pairRight.classList.remove('active-selected');
+            this.pairLeft.classList.add('paired-success');
+            this.pairRight.classList.add('paired-success');
+            this.pairLeft = null;
+            this.pairRight = null;
+
+            const remaining = document.querySelectorAll('#colLeftProfesi .pair-card:not(.paired-success)').length;
+            if (remaining === 0) {
+              fb.className = 'feedback-alert-box correct';
+              fb.textContent = '🎉 Sempurna! Seluruh profesi berhasil kamu pasangkan dengan organisasi yang sesuai.';
+            } else {
+              fb.className = 'feedback-alert-box correct';
+              fb.textContent = `✔ Pasangan cocok! Tersisa ${remaining} profesi lagi.`;
+            }
+          } else {
+            SoundSynth.wrong();
+            fb.className = 'feedback-alert-box wrong';
+            fb.textContent = '✖ Pasangan belum cocok. Ayo cermati kembali organisasi profesi yang tepat!';
+            const l = this.pairLeft;
+            const r = this.pairRight;
+            setTimeout(() => {
+              l.classList.remove('active-selected');
+              r.classList.remove('active-selected');
+            }, 600);
+            this.pairLeft = null;
+            this.pairRight = null;
+          }
+        }
+      },
+
+      showBranch(type) {
+        SoundSynth.click();
+        const box = document.getElementById('branchDetailBox');
+        const title = document.getElementById('branchTitle');
+        const def = document.getElementById('branchDef');
+        const ex = document.getElementById('branchEx');
+        const miniQ = document.getElementById('branchMiniQ');
+
+        box.style.display = 'block';
+
+        if (type === 'pendidikan') {
+          title.textContent = '🎓 Saluran Pendidikan (Social Elevator)';
+          def.textContent = 'Pengertian: Sarana formal maupun nonformal yang membekali ilmu, keterampilan, dan sertifikasi keahlian.';
+          ex.textContent = 'Contoh: Siswa rajin belajar, meraih beasiswa kedokteran, dan menjadi dokter spesialis.';
+          miniQ.textContent = 'Pertanyaan Mini: Mengapa sekolah dijuluki lift sosial? Karena mengangkat kemampuan & derajat individu.';
+        } else if (type === 'politik') {
+          title.textContent = '🏛️ Saluran Organisasi Politik';
+          def.textContent = 'Pengertian: Wadah partisipasi masyarakat dalam kepemimpinan publik dan penyelenggaraan pemerintahan.';
+          ex.textContent = 'Contoh: Tokoh masyarakat aktif berorganisasi dan dipercaya menjadi anggota legislatif/kepala daerah.';
+          miniQ.textContent = 'Pertanyaan Mini: Apa kunci utama politisi yang baik? Integritas dan pengabdian bagi rakyat.';
+        } else if (type === 'ekonomi') {
+          title.textContent = '💼 Saluran Organisasi Ekonomi';
+          def.textContent = 'Pengertian: Jalur perniagaan, koperasi, dan badan usaha yang langsung menaikkan penghasilan serta kesejahteraan.';
+          ex.textContent = 'Contoh: Silvi merintis usaha makanan hingga membuka cabang dan lapangan pekerjaan.';
+          miniQ.textContent = 'Pertanyaan Mini: Apa manfaat wirausaha bagi orang lain? Membuka lapangan pekerjaan baru.';
+        } else if (type === 'profesi') {
+          title.textContent = '👥 Saluran Organisasi Profesi';
+          def.textContent = 'Pengertian: Perkumpulan orang-orang yang memiliki keahlian sejenis untuk menjaga mutu dan kode etik.';
+          ex.textContent = 'Contoh: Guru aktif dalam PGRI, dokter dalam IDI, perawat dalam PPNI, advokat dalam PERADI.';
+          miniQ.textContent = 'Pertanyaan Mini: Mengapa dokter butuh IDI? Untuk memastikan standar pelayanan medis aman dan teruji.';
+        } else if (type === 'keagamaan') {
+          title.textContent = '🤝 Saluran Lembaga Keagamaan & Sosial';
+          def.textContent = 'Pengertian: Wadah pembinaan akhlak mulia, solidaritas kemanusiaan, dan pelayanan masyarakat.';
+          ex.textContent = 'Contoh: Relawan sosial yang ikhlas mendidik anak jalanan sangat dihormati oleh warga.';
+          miniQ.textContent = 'Pertanyaan Mini: Nilai apa yang diutamakan? Budi pekerti luhur, welas asih, dan gotong royong.';
+        }
+      }
+    };
+
+    const QuizRunner = {
+      idx: 0,
+      score: 0,
+      answered: false,
+      questions: [
+        {
+          q: "1. Yita melanjutkan pendidikan hingga perguruan tinggi dan kemudian memperoleh pekerjaan yang sesuai dengan keahliannya. Saluran mobilitas sosial yang paling tepat adalah...",
+          options: ["A. Pendidikan", "B. Organisasi ekonomi", "C. Organisasi profesi", "D. Lembaga keluarga"],
+          correct: 0,
+          exp: "Pendidikan menjadi saluran utama (social elevator) bagi Yita untuk menempuh keahlian sebelum bekerja."
+        },
+        {
+          q: "2. Siut mengembangkan usaha kecil hingga menjadi usaha yang lebih besar dan mempekerjakan beberapa orang. Saluran mobilitas sosial yang ditunjukkan adalah...",
+          options: ["A. Pendidikan", "B. Organisasi ekonomi", "C. Organisasi politik", "D. Lembaga keagamaan"],
+          correct: 1,
+          exp: "Kegiatan wirausaha dan pengembangan bisnis merupakan bentuk saluran di bidang ekonomi."
+        },
+        {
+          q: "3. Pernyataan: 'Pendidikan sering dijuluki sebagai social elevator karena mengangkat kedudukan sosial seseorang ke tingkat yang lebih tinggi.' Apakah pernyataan ini Benar atau Salah?",
+          options: ["A. Benar", "B. Salah"],
+          correct: 0,
+          exp: "Benar. Istilah social elevator menggambarkan peran sekolah/kampus dalam menaikkan posisi sosial seseorang."
+        },
+        {
+          q: "4. Ibu Ratna adalah seorang guru teladan yang aktif dalam wadah Persatuan Guru Republik Indonesia (PGRI). Lembaga yang menaungi Ibu Ratna termasuk dalam saluran...",
+          options: ["A. Organisasi profesi", "B. Organisasi politik praktis", "C. Lembaga militer", "D. Lembaga keluarga"],
+          correct: 0,
+          exp: "PGRI adalah organisasi profesi resmi yang menaungi para tenaga pendidik/guru."
+        },
+        {
+          q: "5. Juma'ah aktif dalam organisasi kemasyarakatan dan dipercaya warga mengemban peran dalam lembaga pemerintahan. Saluran yang dimanfaatkan adalah...",
+          options: ["A. Organisasi politik & kemasyarakatan", "B. Lembaga kesenian tari", "C. Saluran garis keturunan", "D. Lembaga rekreasi"],
+          correct: 0,
+          exp: "Berperan aktif dalam kepemimpinan publik dan pemerintahan merupakan saluran organisasi politik."
+        },
+        {
+          q: "6. Manakah di bawah ini yang BUKAN merupakan contoh profesi dalam saluran organisasi profesi?",
+          options: ["A. Dokter (IDI)", "B. Perawat (PPNI)", "C. Advokat / Pengacara (PERADI)", "D. Pembeli karcis bioskop"],
+          correct: 3,
+          exp: "Pembeli karcis bioskop adalah konsumen hiburan umum, bukan nama rumpun profesi berkeahlian khusus."
+        },
+        {
+          q: "7. Lembaga keagamaan dapat menjadi saluran mobilitas sosial positif karena...",
+          options: [
+            "A. Mengajarkan budi pekerti luhur, solidaritas, dan pelayanan sosial kemanusiaan",
+            "B. Mengharuskan anggota bersaing memamerkan kekayaan harta",
+            "C. Membatasi pergaulan hanya dengan kelompoknya sendiri",
+            "D. Menolak pemanfaatan ilmu pengetahuan dan teknologi"
+          ],
+          correct: 0,
+          exp: "Lembaga keagamaan mendidik moral luhur, kepedulian sosial, dan memberikan kesempatan mengabdi bagi masyarakat."
+        },
+        {
+          q: "8. Pak Joko bergabung dengan Koperasi Desa sehingga hasil panennya dapat dipasarkan dengan harga adil dan taraf hidup keluarganya meningkat. Saluran yang digunakan adalah...",
+          options: ["A. Organisasi ekonomi", "B. Saluran kesenian", "C. Saluran militer", "D. Saluran adat tertutup"],
+          correct: 0,
+          exp: "Koperasi adalah badan usaha gotong royong yang bergerak dalam bidang ekonomi kerakyatan."
+        },
+        {
+          q: "9. Mengapa dalam masyarakat terbuka setiap siswa SMP berpeluang melakukan mobilitas sosial naik?",
+          options: [
+            "A. Karena kedudukan seseorang ditentukan semata oleh kasta keturunan",
+            "B. Karena saluran seperti pendidikan dan usaha terbuka bagi siapa pun yang tekun berikhtiar",
+            "C. Karena pemerintah membatasi peluang wirausaha masyarakat",
+            "D. Karena masyarakat tidak memperbolehkan pergantian profesi"
+          ],
+          correct: 1,
+          exp: "Masyarakat demokratis menjamin kesempatan belajar dan berusaha bagi semua anak bangsa."
+        },
+        {
+          q: "10. Apa sikap terbaik seorang siswa SMP setelah memahami saluran-saluran mobilitas sosial?",
+          options: [
+            "A. Malas belajar karena merasa masa depan hanya soal nasib",
+            "B. Belajar giat, mengasah keterampilan positif, dan pantang menyerah memanfaatkan peluang",
+            "C. Memilih berteman hanya dengan orang yang kaya saja",
+            "D. Menyerah sebelum mencoba mengembangkan diri"
+          ],
+          correct: 1,
+          exp: "Sikap positif adalah tekun belajar, disiplin, dan senantiasa memanfaatkan sarana pendidikan dengan maksimal."
+        }
+      ],
+
+      init() {
+        this.render();
+      },
+
+      render() {
+        this.answered = false;
+        const q = this.questions[this.idx];
+        document.getElementById('quizCounterText').textContent = `Soal ${this.idx + 1} dari ${this.questions.length}`;
+        document.getElementById('quizScoreDisplay').textContent = `Skor Sementara: ${this.score} / 100`;
+        document.getElementById('quizQuestionText').textContent = q.q;
+
+        const box = document.getElementById('quizOptionsList');
+        box.innerHTML = '';
+
+        q.options.forEach((optText, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'ans-option-btn';
+          btn.textContent = optText;
+          btn.onclick = () => this.handlePick(i, btn);
+          box.appendChild(btn);
+        });
+
+        const alertBox = document.getElementById('quizAlertBox');
+        alertBox.style.display = 'none';
+        alertBox.className = 'feedback-alert-box';
+        document.getElementById('btnNextQuiz').style.display = 'none';
+      },
+
+      handlePick(selectedIdx, btnEl) {
+        if (this.answered) return;
+        this.answered = true;
+
+        const q = this.questions[this.idx];
+        const alertBox = document.getElementById('quizAlertBox');
+        const allBtns = document.querySelectorAll('#quizOptionsList .ans-option-btn');
+        allBtns.forEach(b => b.classList.add('disabled'));
+
+        if (selectedIdx === q.correct) {
+          SoundSynth.correct();
+          btnEl.classList.add('opt-correct');
+          this.score += 10;
+          document.getElementById('quizScoreDisplay').textContent = `Skor Sementara: ${this.score} / 100`;
+          alertBox.className = 'feedback-alert-box correct';
+          alertBox.textContent = '✔ Benar Sekali! ' + q.exp;
+        } else {
+          SoundSynth.wrong();
+          btnEl.classList.add('opt-wrong');
+          if (allBtns[q.correct]) allBtns[q.correct].classList.add('opt-correct');
+          alertBox.className = 'feedback-alert-box wrong';
+          alertBox.textContent = '✖ Kurang Tepat. ' + q.exp;
+        }
+
+        alertBox.style.display = 'block';
+        document.getElementById('btnNextQuiz').style.display = 'inline-flex';
+      },
+
+      next() {
+        SoundSynth.click();
+        if (this.idx < this.questions.length - 1) {
+          this.idx++;
+          this.render();
+        } else {
+          this.finish();
+        }
+      },
+
+      finish() {
+        AppState.scores.quiz = this.score;
+        AppState.progress.quizDone = true;
+        if (this.score >= 80) AppState.badges.accurateAnswerer = true;
+        AppState.save();
+
+        const card = document.querySelector('#view-kuis .quiz-card-container');
+        card.innerHTML = `
+          <div style="text-align:center; padding:1.5rem 0;">
+            <div style="font-size:3.5rem; margin-bottom:0.5rem;">🎯</div>
+            <h2 style="color:var(--primary); margin-bottom:0.5rem;">Kuis Berhasil Diselesaikan!</h2>
+            <p style="font-size:1.1rem; color:var(--text-muted); margin-bottom:1.25rem;">Kamu telah menyelesaikan seluruh 10 butir pertanyaan kuis interaktif.</p>
+            <div style="font-size:2.8rem; font-weight:900; color:var(--secondary); margin-bottom:1rem;">
+              Skor Kamu: ${this.score} / 100
+            </div>
+            <p style="margin-bottom:1.75rem; font-weight:700; font-size:1.05rem; color:var(--text-main);">
+              ${this.score >= 80 ? '🌟 Luar biasa! Pemahamanmu sangat tajam dan tepat.' : '💡 Kerja bagus! Tingkatkan terus belajar dan jangan ragu mencoba lagi.'}
+            </p>
+            <div style="display:flex; justify-content:center; gap:0.85rem; flex-wrap:wrap;">
+              <button class="btn btn-secondary" onclick="QuizRunner.restart()">🔄 Ulangi Kuis</button>
+              <button class="btn btn-primary" onclick="App.navigateTo('tantangan')">Lanjut ke Tantangan 🏆</button>
+            </div>
+          </div>
+        `;
+      },
+
+      restart() {
+        this.idx = 0;
+        this.score = 0;
+        const view = document.getElementById('view-kuis');
+        view.innerHTML = `
+          <div class="quiz-card-container">
+            <div class="quiz-status-header">
+              <div>
+                <span class="brand-badge" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">KUIS INTERAKTIF</span>
+                <span id="quizCounterText" style="margin-left:0.6rem; font-weight:800; color:var(--text-muted);">Soal 1 dari 10</span>
+              </div>
+              <div style="font-weight:900; font-size:1.2rem; color:var(--primary);" id="quizScoreDisplay">Skor Sementara: 0 / 100</div>
+            </div>
+            <div class="question-prompt" id="quizQuestionText"></div>
+            <div class="answers-group" id="quizOptionsList"></div>
+            <div id="quizAlertBox" class="feedback-alert-box"></div>
+            <div style="display:flex; justify-content:flex-end; margin-top:1rem;">
+              <button class="btn btn-primary" id="btnNextQuiz" style="display:none;" onclick="QuizRunner.next()">Soal Selanjutnya ➔</button>
+            </div>
+          </div>
+          <div class="bottom-flow-nav">
+            <button class="btn btn-outline" onclick="App.navigateTo('menu')">🏠 Home</button>
+            <button class="btn btn-secondary" onclick="QuizRunner.restart()">🔄 Ulangi Kuis</button>
+          </div>
+        `;
+        this.render();
+      }
+    };
+
+    const ChallengeEngine = {
+      t1Done: false,
+      t2Done: false,
+      t3Done: false,
+
+      chooseT1(val) {
+        const fb = document.getElementById('t1ResultBox');
+        if (val === 'pendidikan') {
+          SoundSynth.correct();
+          fb.className = 'feedback-alert-box correct';
+          fb.textContent = '✔ Tepat Sekali! Pendidikan formal kedokteran atau teknik arsitektur adalah syarat mutlak awal sebelum seseorang dapat menekuni profesi tersebut.';
+          this.t1Done = true;
+          this.checkDone();
+        } else {
+          SoundSynth.wrong();
+          fb.className = 'feedback-alert-box wrong';
+          fb.textContent = '✖ Kurang Tepat. Untuk profesi berkeahlian tinggi seperti dokter atau arsitek, pintu masuk utamanya mutlak adalah menempuh pendidikan resmi.';
+        }
+      },
+
+      moveStep(btn, dir) {
+        SoundSynth.click();
+        const item = btn.closest('.reorder-item');
+        const container = item.parentElement;
+        if (dir === -1 && item.previousElementSibling) {
+          container.insertBefore(item, item.previousElementSibling);
+        } else if (dir === 1 && item.nextElementSibling) {
+          container.insertBefore(item.nextElementSibling, item);
+        }
+      },
+
+      checkOrderT2() {
+        const list = document.getElementById('t2StepList');
+        const steps = Array.from(list.children).map(el => el.getAttribute('data-val')).join('');
+        const fb = document.getElementById('t2ResultBox');
+
+        if (steps === '1234') {
+          SoundSynth.correct();
+          fb.className = 'feedback-alert-box correct';
+          fb.textContent = '✔ Susunan Sempurna! Pendidikan -> Keterampilan -> Pekerjaan -> Kesempatan baru meraih status lebih tinggi.';
+          this.t2Done = true;
+          this.checkDone();
+        } else {
+          SoundSynth.wrong();
+          fb.className = 'feedback-alert-box wrong';
+          fb.textContent = '✖ Urutan belum logis. Cermati langkah awal belajar sebelum seseorang terjun bekerja!';
+        }
+      },
+
+      chooseT3(val) {
+        const fb = document.getElementById('t3ResultBox');
+        if (val === 'pendidikan') {
+          SoundSynth.correct();
+          fb.className = 'feedback-alert-box correct';
+          fb.textContent = '✔ Analisis Detektif Tepat! Dewi memanfaatkan saluran pendidikan untuk mengasah keahlian hingga mendapatkan pekerjaan yang layak.';
+          this.t3Done = true;
+          this.checkDone();
+        } else {
+          SoundSynth.wrong();
+          fb.className = 'feedback-alert-box wrong';
+          fb.textContent = '✖ Kurang Tepat. Dewi tidak menggunakan jalur politik maupun militer dalam cerita tersebut, melainkan tekun belajar dan sekolah.';
+        }
+      },
+
+      checkDone() {
+        if (this.t1Done && this.t2Done && this.t3Done) {
+          AppState.progress.challengeDone = true;
+          AppState.badges.detective = true;
+          AppState.scores.challenge = 100;
+          AppState.save();
+        }
+      }
+    };
+
+    const EvalRunner = {
+      idx: 0,
+      score: 0,
+      correct: 0,
+      wrong: 0,
+      answered: false,
+      questions: [
+        {
+          q: "1. Sanin mengikuti pendidikan dan pelatihan keterampilan. Setelah memiliki keterampilan, ia mendapatkan pekerjaan yang lebih baik. Dari kasus tersebut, saluran mobilitas sosial yang paling terlihat adalah...",
+          options: ["A. Pendidikan & Pelatihan Keterampilan", "B. Organisasi kepemudaan hobi", "C. Lembaga keluarga", "D. Saluran militer"],
+          correct: 0,
+          exp: "Pendidikan dan pelatihan vokasi membekali Sanin kompetensi nyata yang menaikkan posisi kerjanya."
+        },
+        {
+          q: "2. Bu Siti mengembangkan produk kerajinan anyaman bambu tradisional khas desanya hingga menembus pasar ekspor melalui wadah koperasi perajin. Saluran yang berperan besar adalah...",
+          options: ["A. Saluran politik", "B. Organisasi ekonomi (koperasi wirausaha)", "C. Lembaga militer", "D. Lembaga peradilan hukum"],
+          correct: 1,
+          exp: "Koperasi anyaman adalah wadah usaha bersama dalam saluran organisasi ekonomi."
+        },
+        {
+          q: "3. Perbedaan mendasar antara saluran organisasi profesi dengan organisasi politik terletak pada...",
+          options: [
+            "A. Organisasi profesi menghimpun orang dengan keahlian kerja sejenis, sedangkan organisasi politik berkaitan dengan kehidupan pemerintahan dan kebijakan publik",
+            "B. Organisasi profesi tidak membutuhkan keahlian apa pun",
+            "C. Organisasi politik hanya terdapat di desa terpencil",
+            "D. Organisasi profesi selalu bertujuan mencari keuntungan modal uang semata"
+          ],
+          correct: 0,
+          exp: "Organisasi profesi berfokus pada standarisasi bidang kerja, sedangkan politik berfokus pada penyelenggaraan negara."
+        },
+        {
+          q: "4. Tokoh masyarakat yang sangat santun, jujur, dan berilmu agama dipercaya warga menjadi pembimbing yayasan panti asuhan. Saluran mobilitas yang tercermin adalah...",
+          options: ["A. Lembaga keagamaan & keteladanan sosial", "B. Organisasi pasar modal", "C. Korporasi multinasional", "D. Lembaga militer murni"],
+          correct: 0,
+          exp: "Keluhuran akhlak dan ketokohan agama mencerminkan peran saluran lembaga keagamaan."
+        },
+        {
+          q: "5. Manakah kasus berikut yang menunjukkan mobilitas sosial vertikal naik melalui saluran pendidikan?",
+          options: [
+            "A. Doni memenangkan hadiah kupon undian jalan santai",
+            "B. Ani yang berasal dari keluarga petani tekun belajar, meraih beasiswa S2, dan menjadi dosen di perguruan tinggi negeri",
+            "C. Hasan berpindah tempat kerja dengan posisi jabatan dan gaji yang sama persis",
+            "D. Roni memutuskan untuk berhenti sekolah dan berdiam diri di rumah"
+          ],
+          correct: 1,
+          exp: "Ani mengalami mobilitas sosial naik berkat tangga pendidikan tinggi yang diraihnya dengan tekun."
+        },
+        {
+          q: "6. Ikatan Dokter Indonesia (IDI), Persatuan Dokter Gigi Indonesia (PDGI), dan Persatuan Perawat Nasional Indonesia (PPNI) merupakan contoh saluran dalam rumpun...",
+          options: ["A. Lembaga politik praktis", "B. Organisasi profesi", "C. Organisasi perdagangan saham", "D. Organisasi seni bela diri"],
+          correct: 1,
+          exp: "Ketiganya adalah wadah resmi yang menghimpun tenaga medis profesional."
+        },
+        {
+          q: "7. Mengapa sebuah saluran mobilitas sosial memerlukan adanya aturan, kode etik, dan seleksi kemampuan?",
+          options: [
+            "A. Agar kedudukan seseorang dapat ditentukan secara adil berdasarkan kompetensi dan tanggung jawabnya",
+            "B. Hanya untuk menyulitkan rakyat kecil agar tidak bisa maju",
+            "C. Supaya posisi sosial hanya bisa diwariskan kepada anak keturunan sendiri",
+            "D. Agar masyarakat tidak mau belajar dan bekerja"
+          ],
+          correct: 0,
+          exp: "Standar dan aturan menjamin seseorang memangku tanggung jawab sesuai kapabilitas dan kelayakannya."
+        },
+        {
+          q: "8. Dalam masyarakat Indonesia yang majemuk, lembaga keagamaan berperan positif sebagai...",
+          options: [
+            "A. Sarana pemecah belah kerukunan antarwarga",
+            "B. Wadah pembinaan karakter luhur, kepedulian sosial, dan persatuan",
+            "C. Tempat untuk memamerkan kekayaan pribadi secara berlebihan",
+            "D. Wadah yang melarang generasinya bersekolah tinggi"
+          ],
+          correct: 1,
+          exp: "Lembaga keagamaan menumbuhkan kasih sayang, toleransi, pembinaan akhlak, dan gotong royong."
+        },
+        {
+          q: "9. Pak Surya awalnya seorang karyawan staf biasa. Karena tekun, jujur, dan berprestasi mengembangkan sistem kerja perusahaan, ia dipromosikan menjadi Direktur Operasional. Hal ini menunjukkan saluran...",
+          options: ["A. Lembaga keturunan bangsawan", "B. Organisasi ekonomi / dunia usaha profesional", "C. Saluran tradisi adat tertutup", "D. Lembaga rekreasi"],
+          correct: 1,
+          exp: "Promosi jabatan dalam perusahaan adalah bukti mobilitas naik lewat saluran lembaga ekonomi."
+        },
+        {
+          q: "10. Kesimpulan yang paling tepat mengenai saluran mobilitas sosial bagi siswa SMP adalah...",
+          options: [
+            "A. Masa depan hanya ditentukan oleh garis nasib tanpa perlu ikhtiar",
+            "B. Hanya orang yang memiliki uang berlimpah yang dapat maju",
+            "C. Terbuka berbagai saluran positif seperti sekolah, keahlian, dan wirausaha yang dapat dimanfaatkan untuk meningkatkan taraf hidup",
+            "D. Mobilitas sosial hanya terjadi di luar negeri"
+          ],
+          correct: 2,
+          exp: "Setiap generasi muda memiliki kesempatan luas untuk memanfaatkan saluran-saluran positif demi masa depan bermartabat."
+        }
+      ],
+
+      init() {
+        this.render();
+      },
+
+      render() {
+        this.answered = false;
+        const q = this.questions[this.idx];
+        document.getElementById('evalCounterText').textContent = `Soal ${this.idx + 1} dari ${this.questions.length}`;
+        document.getElementById('evalScoreDisplay').textContent = `Skor: ${this.score} / 100`;
+        document.getElementById('evalQuestionText').textContent = q.q;
+
+        const box = document.getElementById('evalOptionsList');
+        box.innerHTML = '';
+
+        q.options.forEach((optText, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'ans-option-btn';
+          btn.textContent = optText;
+          btn.onclick = () => this.handlePick(i, btn);
+          box.appendChild(btn);
+        });
+
+        const alertBox = document.getElementById('evalAlertBox');
+        alertBox.style.display = 'none';
+        alertBox.className = 'feedback-alert-box';
+        document.getElementById('btnNextEval').style.display = 'none';
+      },
+
+      handlePick(selectedIdx, btnEl) {
+        if (this.answered) return;
+        this.answered = true;
+
+        const q = this.questions[this.idx];
+        const alertBox = document.getElementById('evalAlertBox');
+        const allBtns = document.querySelectorAll('#evalOptionsList .ans-option-btn');
+        allBtns.forEach(b => b.classList.add('disabled'));
+
+        if (selectedIdx === q.correct) {
+          SoundSynth.correct();
+          btnEl.classList.add('opt-correct');
+          this.score += 10;
+          this.correct++;
+          document.getElementById('evalScoreDisplay').textContent = `Skor: ${this.score} / 100`;
+          alertBox.className = 'feedback-alert-box correct';
+          alertBox.textContent = '✔ Tepat Sekali! ' + q.exp;
+        } else {
+          SoundSynth.wrong();
+          btnEl.classList.add('opt-wrong');
+          this.wrong++;
+          if (allBtns[q.correct]) allBtns[q.correct].classList.add('opt-correct');
+          alertBox.className = 'feedback-alert-box wrong';
+          alertBox.textContent = '✖ Kurang Tepat. ' + q.exp;
+        }
+
+        alertBox.style.display = 'block';
+        document.getElementById('btnNextEval').style.display = 'inline-flex';
+      },
+
+      next() {
+        SoundSynth.click();
+        if (this.idx < this.questions.length - 1) {
+          this.idx++;
+          this.render();
+        } else {
+          this.finish();
+        }
+      },
+
+      finish() {
+        AppState.scores.eval = this.score;
+        AppState.progress.evalDone = true;
+        if (this.score >= 80) AppState.badges.master = true;
+        AppState.save();
+
+        document.getElementById('evaluasiQuizArea').style.display = 'none';
+        const resArea = document.getElementById('evaluasiResultArea');
+        resArea.style.display = 'block';
+
+        document.getElementById('evalFinalScore').textContent = this.score;
+        document.getElementById('evalCorrectCount').textContent = this.correct;
+        document.getElementById('evalWrongCount').textContent = this.wrong;
+        document.getElementById('evalPercentText').textContent = this.score + '%';
+
+        const title = document.getElementById('evalCategoryTitle');
+        const desc = document.getElementById('evalCategoryDesc');
+
+        if (this.score >= 90) {
+          title.textContent = '🌟 Luar biasa!';
+          title.style.color = '#15803d';
+          desc.textContent = 'Pemahamanmu tentang saluran mobilitas sosial sangat baik.';
+        } else if (this.score >= 75) {
+          title.textContent = '👏 Bagus!';
+          title.style.color = '#1d4ed8';
+          desc.textContent = 'Kamu sudah memahami sebagian besar materi.';
+        } else if (this.score >= 60) {
+          title.textContent = '👍 Cukup baik.';
+          title.style.color = '#d97706';
+          desc.textContent = 'Pelajari kembali beberapa bagian materi.';
+        } else {
+          title.textContent = '💪 Jangan menyerah.';
+          title.style.color = '#b91c1c';
+          desc.textContent = 'Yuk pelajari kembali materi dan coba lagi.';
+        }
+      },
+
+      restart() {
+        this.idx = 0;
+        this.score = 0;
+        this.correct = 0;
+        this.wrong = 0;
+        document.getElementById('evaluasiQuizArea').style.display = 'block';
+        document.getElementById('evaluasiResultArea').style.display = 'none';
+        this.render();
+      }
+    };
+
+    const FactManager = {
+      idx: 0,
+      facts: [
+        {
+          icon: "💡",
+          title: "Pendidikan Bukan Satu-Satunya",
+          content: "Pendidikan bukan satu-satunya saluran mobilitas sosial. Kesempatan untuk meningkatkan status sosial juga dapat berkaitan dengan kegiatan ekonomi, organisasi profesi, organisasi politik, dan lembaga sosial lainnya."
+        },
+        {
+          icon: "🎓",
+          title: "Istilah Social Elevator",
+          content: "Sosiolog Pitirim A. Sorokin mempopulerkan istilah 'Social Elevator' untuk menggambarkan lembaga pendidikan yang bergerak vertikal mengangkat kedudukan peserta didik dari strata bawah ke atas."
+        },
+        {
+          icon: "💼",
+          title: "Koperasi Gotong Royong",
+          content: "Bung Hatta meneladankan Koperasi sebagai sarana saluran ekonomi kerakyatan Indonesia, di mana warga saling tolong-menolong meningkatkan kesejahteraan bersama."
+        },
+        {
+          icon: "🤝",
+          title: "Kedermawanan & Kemajuan Sosial",
+          content: "Lembaga keagamaan dan kemasyarakatan di Indonesia secara rutin memberikan ribuan beasiswa belajar bagi generasi penerus bangsa yang berprestasi."
+        }
+      ],
+
+      init() {
+        this.render();
+      },
+
+      render() {
+        const item = this.facts[this.idx];
+        const inner = document.getElementById('factCardBox');
+        if (inner) inner.classList.remove('is-flipped');
+
+        document.getElementById('factFrontIcon').textContent = item.icon;
+        document.getElementById('factFrontTitle').textContent = item.title;
+        document.getElementById('factBackText').textContent = `"${item.content}"`;
+      },
+
+      toggle() {
+        SoundSynth.click();
+        const inner = document.getElementById('factCardBox');
+        if (inner) inner.classList.toggle('is-flipped');
+      },
+
+      next() {
+        SoundSynth.click();
+        this.idx = (this.idx + 1) % this.facts.length;
+        this.render();
+      },
+
+      prev() {
+        SoundSynth.click();
+        this.idx = (this.idx - 1 + this.facts.length) % this.facts.length;
+        this.render();
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      App.init();
+    });
+  </script>
+</body>
+</html>
